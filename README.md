@@ -16,7 +16,10 @@ I'll also be adding a sort of TODO list below too.
 ### IMPORTANT:
 ** BTW when you guys make changes/commit please add a summary of the changes u guys made for easier progress tracking and documentation. 
 
-** I setup a virtual environment so that hopefully all the necesarry modules will come installed with the repo meaning you guys wont have to install anything but let me know if there are issues. You might have to sellect to run on the venv on vscode idk
+** To get started, i recommend making a virtual env by running `python -m venv venv` in the terminal then activating it. 
+Windows: `venv\Scripts\activate` 
+Mac: `source venv/bin/activate`
+Then, run this command: `pip install -r requirements.txt`
 
 ** To import the sql file (CineArchive-dump.sql), run this command:
 `mysql -u root -p CineArchive < cinearchive_dump.sql`
