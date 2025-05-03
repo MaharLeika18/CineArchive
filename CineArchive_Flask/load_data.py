@@ -1,52 +1,31 @@
 import pandas as pd
-import mysql.connector
-import os
-from dotenv import load_dotenv
+from website import create_app, db
+from website.models import Movie
+import ast
+import csv
 
-# Load environment variables
-load_dotenv()
+def load_csv_to_db(csv_path):
+    with open(csv_path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            movie = Movie(
+                id=row['id'],
+                title=row['title'],
+                year=int(row['year']) if row['year'] else None,
+                description=row['description'],
+                directors=(row['directors']),
+                writers=(row['writers']),
+                stars=(row['stars']),
+                genres=(row['genres']),
+                production_companies=(row['production_companies']),
+                release_date=row['release_date'],  # handle format if needed
+                duration=row['duration'],
+                rating=float(row['rating']) if row['rating'] else None,
+                languages=(row['languages']),
+            )
 
-# DB credentials from .env
-db_config = {
-    'host': os.getenv('DB_HOST'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD'),
-    'database': os.getenv('DB_NAME')
-}
+            # Insert to DB if it doesn't exist
+            if not db.session.get(Movie, movie.id):
+                db.session.add(movie)
 
-# Read the cleaned CSV
-df = pd.read_csv('data/movies_cleaned.csv')
-
-# Optional: preview first rows
-print("Preview of dataset:")
-print(df.head())
-
-# Connect to MySQL
-conn = mysql.connector.connect(**db_config)
-cursor = conn.cursor()
-
-# TODO: REWRITE THE FF TO MAKE THE DATA MATCH WITH THE MOVIES DATASET
-
-# Insert data into the `movies` table
-insert_query = """
-INSERT INTO movies (title, genre, release_year, rating, runtime, language, director)
-VALUES (%s, %s, %s, %s, %s, %s, %s)
-"""
-
-for _, row in df.iterrows():
-    cursor.execute(insert_query, (
-        row['title'],
-        row['genre'],
-        int(row['release_year']),
-        float(row['rating']) if not pd.isna(row['rating']) else None,
-        int(row['runtime']) if not pd.isna(row['runtime']) else None,
-        row['language'],
-        row['director']
-    ))
-
-conn.commit()
-print("✅ Data imported successfully.")
-
-# Clean up
-cursor.close()
-conn.close()
+        db.session.commit()

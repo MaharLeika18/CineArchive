@@ -19,7 +19,7 @@ I'll also be adding a sort of TODO list below too.
 ** To get started, i recommend making a virtual env by running `python -m venv venv` in the terminal then activating it. 
 Windows: `venv\Scripts\activate` 
 Mac: `source venv/bin/activate`
-Then, run this command: `pip install -r requirements.txt`
+Then, run the CineArchive_requirement.bat file.
 
 ** To import the sql file (CineArchive-dump.sql), run this command:
 `mysql -u root -p CineArchive < cinearchive_dump.sql`
