@@ -1,5 +1,5 @@
-from website import db, create_app  # adjust to match your structure
-from website.models import Movie  # your Movie model
+from website import db, create_app  
+from website.models import Movie 
 from website import db
 from website.models import Movie
 import ast
@@ -34,7 +34,10 @@ def convert_stringified_fields():
     print(f"Updated {updated_count} movie records.")
 
 if __name__ == '__main__':
-    convert_stringified_fields()
+    app = create_app()
+    with app.app_context():
+        convert_stringified_fields()
+
 
 # This is just a dev file im using to test the backend
 # To be deleted when all is done

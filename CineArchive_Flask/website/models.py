@@ -3,7 +3,7 @@ from . import db
 class Movie(db.Model):
     __tablename__ = 'movies'
 
-    id = db.Column(db.String(100), primary_key=True)  # should match the 'id' in the CSV
+    id = db.Column(db.VARCHAR(100), primary_key=True)  # should match the 'id' in the CSV
     title = db.Column(db.String(255), nullable=False)
     year = db.Column(db.Integer)
     description = db.Column(db.Text)
@@ -28,7 +28,7 @@ class Watchlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     
     user_id = db.Column(db.Integer, nullable=False)  # Currently static, but ready for future multi-user support
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), nullable=False)
+    movie_id = db.Column(db.VARCHAR(100), db.ForeignKey('movies.id'))
     
     added_at = db.Column(db.DateTime, server_default=db.func.now())  # Optional timestamp for sorting/filtering
 
