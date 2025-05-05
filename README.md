@@ -13,7 +13,7 @@ I'll also be adding a sort of TODO list below too.
 
 05/01 - Made the prerequisite file stucture based on the tutorials, not at all functional, just trying to get the foundation for our project right. Don't try to run main.py it wont work XD
 
-### IMPORTANT:
+### Getting Started:
 ** BTW when you guys make changes/commit please add a summary of the changes u guys made for easier progress tracking and documentation. 
 
 ** To get started, i recommend making a virtual env by running `python -m venv venv` in the terminal then activating it. 
@@ -21,12 +21,18 @@ Windows: `venv\Scripts\activate`
 Mac: `source venv/bin/activate`
 Then, run the CineArchive_requirement.bat file.
 
-** To import the sql file (CineArchive-dump.sql), run this command:
-`mysql -u root -p CineArchive < cinearchive_dump.sql`
+** Make sure to start an sql server on ur device. Here are the links [for Mac](https://youtu.be/ODA3rWfmzg8?si=Hpyy9UMTYXhx0AbV) and [for Windows](https://youtu.be/u96rVINbAUI?si=pKmJOFIRgz-LYiqm). Note that I haven't tested the one for Windows so you guys may have to figure that out urselves XD
 
-** Please follow the steps listed in the .env.example file
+** Create a database, either following the tutorial or by running this code in MySQL: `CREATE DATABASE cinearchive CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 
-** As of now, the sql file is a placeholder, i need to change it to correspond to the movies dataset
+** Then, follow the steps listed in the .env.example file
+
+** Run this in the VSCode terminal (replace the temp values ofc): `mysql -u your_mysql_username -p cinearchive < CineArchive_Flask/data/CineArchive_dump.sql`
+    NOTE: You guys will have to run this line everytime anyone else updates the database. Also, double check the file name and ensure that it's set to the latest vers.
+    If you guys do make changes to the database, run this code in the VSCode terminal: `mysql -u your_mysql_username -p cinearchive < CineArchive_Flask/data/CineArchive_dump#.sql`
+    Don't replace old sql dump files (just to be safe, we can delete it later on), increment the # symbol with corresponding numbers.
+
+** After following those steps, you should now be able to run the app.py file to start the flask server.
 
 ### TODO:
 Everything lmao jk I've just made the basic file stucture that we'll probably be using for our project. So everything else is on the table. Feel free to update as we go along:
@@ -37,5 +43,4 @@ Everything lmao jk I've just made the basic file stucture that we'll probably be
 
 ** Basically, everything else front-end related
 
-** For back-end, wait for me to get the database up and working XD (or do it for me if ur crazy ig)
-
+** Back-end is mostly done maybe? However, we are still missing that movie recomendation system.
