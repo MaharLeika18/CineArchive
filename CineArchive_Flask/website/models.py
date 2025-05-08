@@ -1,4 +1,5 @@
 from . import db
+from flask_login import UserMixin
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -36,4 +37,10 @@ class Watchlist(db.Model):
 
     def __repr__(self):
         return f"<Watchlist user={self.user_id} movie_id={self.movie_id}>"
+class User(db.Model, UserMixin):
+    __tablename__ = 'users'
 
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
