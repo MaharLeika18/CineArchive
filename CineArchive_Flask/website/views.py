@@ -81,7 +81,7 @@ def remove_from_watchlist(movie_id):
     return redirect(url_for('views.view_watchlist'))
 
 # List all films function + filtering
-@views.route('/movies', methods=['GET'])
+@views.route('/movie', methods=['GET'])
 def list_movies():
     title = request.args.get('title')
     directors = request.args.get('directors')
