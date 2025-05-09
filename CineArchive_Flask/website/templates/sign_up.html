@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineArchive Login</title>
+    <title>CineArchive SignUp</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -121,7 +121,7 @@
             color: #fff;
             padding: 12px 15px;
             margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 16px;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -155,7 +155,7 @@
             color: #fff;
             padding: 12px 15px;
             margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 16px;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -346,24 +346,39 @@
     <div class="system-container">
         <div class="header">
             <div class="info-icon"></div>
-            <div class="notification-text">Welcome Back!</div>
+            <div class="notification-text">Get Started</div>
         </div>
 
         <div class="form-title">
-            Please Log In to use <span class="highlight">CineArchive</span>.
-            <div></div> 
-            Enter your email and password to continue.
+            Sign Up/Create an account to use <span class="highlight">CineArchive</span>.
+            <div></div>
+            Enter your email and password to create an account.
         </div>
 
-        <label for="Email" class="input-label">Enter your Email:</label>
-        <input type="text" id="UserName" class="input-field" placeholder="Your email here...">
-        <div id="nameDisplay" class="name-display" aria-live="polite"></div>
-        <label for="Password" class="input1-label">Enter your Password:</label>
-        <input type="text" id="Password" class="input-field" placeholder="Your password here...">
-        <div id="PassDisplay" class="pass-display" aria-live="polite"></div>
+        <!-- Flash message to indicate error or success, feel free to edit this with css -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <label for="username" class="input-label">Choose a Username:</label>
+            <input type="text" id="username" name="username" class="input-field" placeholder="Your username..." required>
+        
+            <label for="password" class="input-label">Create a Password:</label>
+            <input type="password" id="password" name="password" class="input-field" placeholder="Your password..." required>
+        
+            <label for="confirm_password" class="input-label">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="input-field" placeholder="Repeat password..." required>
+        
+            <button type="submit" class="submit-button">Register</button>
+        </form>
 
         <div class="button-container">
-            <button type="button" id="acceptBtn" class="system-button">Log In</button>
+            <button type="button" id="acceptBtn" class="system-button">Sign Up</button>
             <button type="button" id="declineBtn" class="system-button">Back</button>
         </div>
 

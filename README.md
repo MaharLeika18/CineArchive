@@ -29,7 +29,7 @@ Then, run the CineArchive_requirement.bat file.
 
 ** Run this in the VSCode terminal (replace the temp values ofc): `mysql -u your_mysql_username -p cinearchive < CineArchive_Flask/data/CineArchive_dump.sql`
     NOTE: You guys will have to run this line everytime anyone else updates the database. Also, double check the file name and ensure that it's set to the latest vers.
-    If you guys do make changes to the database, run this code in the VSCode terminal: `mysql -u your_mysql_username -p cinearchive < CineArchive_Flask/data/CineArchive_dump#.sql`
+    If you guys do make changes to the database, run this code in the VSCode terminal: `mysqldump -u root -p CineArchive > cinearchive_dump#.sql`
     Don't replace old sql dump files (just to be safe, we can delete it later on), increment the # symbol with corresponding numbers.
 
 ** After following those steps, you should now be able to run the app.py file to start the flask server.

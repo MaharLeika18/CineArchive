@@ -65,4 +65,4 @@ def register():
             db.session.rollback()
             flash(f'Error: {e}', 'danger')
 
-    return render_template('register.html')
+    return render_template('sign_up.html')
