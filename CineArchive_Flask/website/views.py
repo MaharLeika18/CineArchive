@@ -1,11 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from .models import Movie, Watchlist
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
+from flask_login import current_user, login_required
 from . import db
-from sqlalchemy import or_
-from flask_login import current_user
-from sqlalchemy import func
-from flask import current_app
-from sqlalchemy import text
+from sqlalchemy import func, text
 
 views = Blueprint('views', __name__)
 
@@ -24,45 +20,96 @@ def home():
 
 @views.route('/search')
 def search():
-    query = request.args.get('q', '').lower()
+    query = request.args.get('q', '')
     results = []
+
     if query:
         try:
-            results = Movie.query.filter(
-                or_(
-                    func.lower(Movie.title).ilike(f"%{query}%"),
-                    func.lower(Movie.description).ilike(f"%{query}%"),
-                    func.lower(Movie.directors).ilike(f"%{query}%"),
-                    func.lower(Movie.writers).ilike(f"%{query}%"),
-                    func.lower(Movie.stars).ilike(f"%{query}%"),
-                    func.lower(Movie.genres).ilike(f"%{query}%"),
-                    func.lower(Movie.production_companies).ilike(f"%{query}%"),
-                )
-            ).all()
-            current_app.logger.info(f"Query successful: {query}, Found {len(results)} results")
+            stmt = text("CALL search_movies(:query_text)")
+            result_proxy = db.session.execute(stmt, {'query_text': query})
+            results = result_proxy.mappings().all()
         except Exception as e:
-            current_app.logger.error(f"Error in search query: {e}")
-    else:
-        current_app.logger.info("Empty query received.")
+            current_app.logger.error(f"Stored procedure error: {e}")
 
     return render_template('search.html', results=results, query=query)
 
+# View full movie details - poster (using api), title, director, release date
+@views.route('/movie/<string:movie_id>')
+def movie_details(movie_id):
+    try:
+        stmt = text("CALL get_movie_details(:movie_id_param)")
+        result = db.session.execute(stmt, {'movie_id_param': movie_id})
+        movie = result.mappings().fetchone()  # Single row as dict
+        if not movie:
+            return render_template('404.html'), 404
+    except Exception as e:
+        current_app.logger.error(f"Error fetching movie details: {e}")
+        return render_template('500.html'), 500
+
+    return render_template('movie_details.html', movie=movie)
+
 @views.route('/watchlist')
+@login_required
 def view_watchlist():
-    watchlist_items = Watchlist.query.filter_by(user_id = current_user.id).all()
-    movie_ids = [item.movie_id for item in watchlist_items]
-    movies = Movie.query.filter(Movie.id.in_(movie_ids)).all()
+    try:
+        stmt = text("CALL get_watchlist_movies(:uid)")
+        result = db.session.execute(stmt, {'uid': current_user.id})
+        movies = result.fetchall()
+    except Exception as e:
+        current_app.logger.error(f"Error fetching watchlist: {e}")
+        movies = []
     return render_template('watchlist.html', movies=movies)
 
 @views.route('/watchlist/add/<int:movie_id>', methods=['POST'])
 def add_to_watchlist(movie_id):
-    if not Watchlist.query.filter_by(user_id = current_user.id, movie_id=movie_id).first():
-        db.session.add(Watchlist(user_id = current_user.id, movie_id=movie_id))
+    try:
+        stmt = text("CALL add_to_watchlist(:uid, :mid)")
+        db.session.execute(stmt, {'uid': current_user.id, 'mid': str(movie_id)})
         db.session.commit()
+    except Exception as e:
+        current_app.logger.error(f"Error adding to watchlist: {e}")
     return redirect(url_for('views.view_watchlist'))
 
 @views.route('/watchlist/remove/<int:movie_id>', methods=['POST'])
 def remove_from_watchlist(movie_id):
-    Watchlist.query.filter_by(user_id = current_user.id, movie_id=movie_id).delete()
-    db.session.commit()
+    try:
+        stmt = text("CALL remove_from_watchlist(:uid, :mid)")
+        db.session.execute(stmt, {'uid': current_user.id, 'mid': str(movie_id)})
+        db.session.commit()
+    except Exception as e:
+        current_app.logger.error(f"Error removing from watchlist: {e}")
     return redirect(url_for('views.view_watchlist'))
+
+# List all films function + filtering
+@views.route('/movie', methods=['GET'])
+def list_movies():
+    title = request.args.get('title')
+    directors = request.args.get('directors')
+    year = request.args.get('year', type=int)
+
+    try:
+        result = db.session.execute(
+            text("CALL list_movies_filtered(:title, :directors, :year)"),
+            {"title": title, "directors": directors, "year": year}
+        )
+        movies = [dict(row._mapping) for row in result.fetchall()]
+    except Exception as e:
+        current_app.logger.error(f"Error fetching filtered movies: {e}")
+        movies = []
+
+    return render_template('movies.html', movies=movies, title=title, directors=directors, year=year)
+
+# Random movie function
+@views.route('/random')
+def random_movie():
+    try:
+        stmt = text("CALL get_random_movie()")
+        result = db.session.execute(stmt)
+        movie = result.mappings().fetchone()
+        if not movie:
+            return render_template('404notfound.html', message="No movies found."), 404
+    except Exception as e:
+        current_app.logger.error(f"Error fetching random movie: {e}")
+        return render_template('500.html'), 500
+
+    return render_template('movie_details.html', movie=movie)

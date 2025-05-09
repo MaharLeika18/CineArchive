@@ -1,0 +1,14 @@
+<h1>All Movies</h1>
+
+<form method="get" action="{{ url_for('views.list_movies') }}">
+  <input type="text" name="title" placeholder="Title" value="{{ title or '' }}">
+  <input type="text" name="genre" placeholder="Genre" value="{{ genre or '' }}">
+  <input type="number" name="year" placeholder="Year" value="{{ year or '' }}">
+  <button type="submit">Filter</button>
+</form>
+
+<ul>
+  {% for movie in movies %}
+    <li>{{ movie['title'] }} ({{ movie['year'] }}) - {{ movie['genres'] }}</li>
+  {% endfor %}
+</ul>
