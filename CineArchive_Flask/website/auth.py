@@ -33,7 +33,7 @@ def login():
             db.session.rollback()
             flash(f"Login error: {e}", 'danger')
 
-    return render_template('login.html')
+    return render_template('login.html', back_url=request.referrer)
 
 @auth.route('/logout')
 @login_required

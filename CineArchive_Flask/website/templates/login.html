@@ -21,13 +21,31 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-image: url('https://media.discordapp.net/attachments/1130355826683559947/1370338665972105391/Untitled_design_7.png?ex=681f22d5&is=681dd155&hm=7981b5243b41adca5153da57ccbf59d50de984377345fd3077c85326e07e0d4c&=&format=webp&quality=lossless&width=1100&height=618');
+            background-image: url('https://media.discordapp.net/attachments/1130355826683559947/1370391798811197541/Untitled_design_8.png?ex=681f5451&is=681e02d1&hm=9eeba9629cbea4b5592241ce416aa699f01a976a6ba1cb1f6a5ebbfe9a0044a6&=&format=webp&quality=lossless&width=1934&height=1088');
             background-size: 1920px 1080px; 
             background-position: center;
         }
 
+        .logo {
+            position: relative;
+            top: -60px;
+        }
+
+        .logo img {
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 200px;
+            height: 200px;
+            position: center;
+            display: block; 
+        }
+
         .system-container {
             position: relative;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
             width: 800px;
             padding: 40px;
             background-color: rgba(5, 10, 25, 0.7);
@@ -121,7 +139,7 @@
             color: #fff;
             padding: 12px 15px;
             margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 16px;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -155,7 +173,7 @@
             color: #fff;
             padding: 12px 15px;
             margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 16px;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -342,17 +360,18 @@
 <body>
     <div class="circuit-lines"></div>
     <div class="particles" id="particles"></div>
-
+    <div class="logo">
+        <img src="https://media.discordapp.net/attachments/1130355826683559947/1370393642107273267/12.png?ex=681f5608&is=681e0488&hm=77b9f7ca9d47bd7b7ebf50a766e9f574027a0f6d0e69682cb1c3db78ea8f7fde&=&format=webp&quality=lossless&width=200&height=200" alt="Logo"/>
     <div class="system-container">
         <div class="header">
             <div class="info-icon"></div>
-            <div class="notification-text">Welcome Back!</div>
+            <div class="notification-text">Welcome Back</div>
         </div>
 
         <div class="form-title">
             Please Log In to use <span class="highlight">CineArchive</span>.
             <div></div> 
-            Enter your email and password to continue.
+            Enter your username and password to continue.
         </div>
 
         <!-- Flash message to indicate error or success, feel free to edit this with css -->
@@ -363,23 +382,19 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        
+
         <form method="POST" action="{{ url_for('auth.login') }}">
             <label for="username" class="input-label">Enter your Username:</label>
-            <input type="text" id="username" name="username" class="input-field" placeholder="Your username here..." required>
-            <div id="nameDisplay" class="name-display" aria-live="polite"></div>
+            <input type="text" id="username" name="username" class="input-field" placeholder="Your username..." required>
         
-            <label for="password" class="input1-label">Enter your Password:</label>
-            <input type="password" id="password" name="password" class="input-field" placeholder="Your password here..." required>
-            <div id="PassDisplay" class="pass-display" aria-live="polite"></div>
-        
-            <button type="submit" class="submit-button">Login</button>
-        </form>
+            <label for="password" class="input-label">Enter your Password:</label>
+            <input type="password" id="password" name="password" class="input-field" placeholder="Your password..." required>
 
         <div class="button-container">
-            <button type="button" id="acceptBtn" class="system-button">Log In</button>
-            <button type="button" id="declineBtn" class="system-button">Back</button>
+            <button type="submit" id="acceptBtn" class="system-button">Log In</button>
+            <button type="button" class="system-button" onclick="window.location.href='{{ back_url or url_for('views.home') }}'">Back</button>
         </div>
+        </form>
 
       <script>
         const particlesContainer = document.getElementById('particles');
