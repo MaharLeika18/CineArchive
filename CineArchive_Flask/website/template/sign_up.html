@@ -21,13 +21,31 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-image: url('https://media.discordapp.net/attachments/1130355826683559947/1370338665972105391/Untitled_design_7.png?ex=681f22d5&is=681dd155&hm=7981b5243b41adca5153da57ccbf59d50de984377345fd3077c85326e07e0d4c&=&format=webp&quality=lossless&width=1100&height=618');
+            background-image: url('https://media.discordapp.net/attachments/1130355826683559947/1370391798811197541/Untitled_design_8.png?ex=681f5451&is=681e02d1&hm=9eeba9629cbea4b5592241ce416aa699f01a976a6ba1cb1f6a5ebbfe9a0044a6&=&format=webp&quality=lossless&width=1934&height=1088');
             background-size: 1920px 1080px; 
             background-position: center;
         }
 
+        .logo {
+            position: relative;
+            top: -60px;
+        }
+
+        .logo img {
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 200px;
+            height: 200px;
+            position: center;
+            display: block; 
+        }
+
         .system-container {
             position: relative;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
             width: 800px;
             padding: 40px;
             background-color: rgba(5, 10, 25, 0.7);
@@ -343,6 +361,9 @@
     <div class="circuit-lines"></div>
     <div class="particles" id="particles"></div>
 
+    <div class="logo">
+        <img src="https://media.discordapp.net/attachments/1130355826683559947/1370393642107273267/12.png?ex=681f5608&is=681e0488&hm=77b9f7ca9d47bd7b7ebf50a766e9f574027a0f6d0e69682cb1c3db78ea8f7fde&=&format=webp&quality=lossless&width=200&height=200" alt="Logo"/>
+
     <div class="system-container">
         <div class="header">
             <div class="info-icon"></div>
@@ -355,18 +376,30 @@
             Enter your email and password to create an account.
         </div>
 
-        <label for="Email" class="input-label">Enter your Email:</label>
-        <input type="text" id="UserName" class="input-field" placeholder="Your email here...">
-        <div id="nameDisplay" class="name-display" aria-live="polite"></div>
+        <!-- Flash message to indicate error or success, feel free to edit this with css -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-        <label for="Password" class="input1-label">Enter your Password:</label>
-        <input type="text" id="Password" class="input-field1" placeholder="Your password here...">
-        <div id="PassDisplay" class="pass-display" aria-live="polite"></div>
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <label for="username" class="input-label">Choose a Username:</label>
+            <input type="text" id="username" name="username" class="input-field" placeholder="Your username..." required>
+        
+            <label for="password" class="input-label">Create a Password:</label>
+            <input type="password" id="password" name="password" class="input-field" placeholder="Your password..." required>
+        
+            <label for="confirm_password" class="input-label">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="input-field" placeholder="Repeat password..." required>
 
         <div class="button-container">
-            <button type="button" id="acceptBtn" class="system-button">Sign Up</button>
+            <button type="button" id="acceptBtn" class="system-button">Register</button>
             <button type="button" id="declineBtn" class="system-button">Back</button>
         </div>
+        </form>
 
       <script>
         const particlesContainer = document.getElementById('particles');
