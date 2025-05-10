@@ -14,7 +14,7 @@ def check_db_connection():
     except Exception as e:
         current_app.logger.error(f"Error connecting to database: {e}")
 
-@views.route('/')
+@views.route('/home')
 def home():
     return "<h1>Test</h1>"  # Change this into the home template
 

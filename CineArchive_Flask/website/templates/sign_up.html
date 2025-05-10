@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineArchive Login</title>
+    <title>CineArchive SignUp</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -360,18 +360,20 @@
 <body>
     <div class="circuit-lines"></div>
     <div class="particles" id="particles"></div>
+
     <div class="logo">
         <img src="https://media.discordapp.net/attachments/1130355826683559947/1370393642107273267/12.png?ex=681f5608&is=681e0488&hm=77b9f7ca9d47bd7b7ebf50a766e9f574027a0f6d0e69682cb1c3db78ea8f7fde&=&format=webp&quality=lossless&width=200&height=200" alt="Logo"/>
+
     <div class="system-container">
         <div class="header">
             <div class="info-icon"></div>
-            <div class="notification-text">Welcome Back</div>
+            <div class="notification-text">Get Started</div>
         </div>
 
         <div class="form-title">
-            Please Log In to use <span class="highlight">CineArchive</span>.
-            <div></div> 
-            Enter your username and password to continue.
+            Sign Up/Create an account to use <span class="highlight">CineArchive</span>.
+            <div></div>
+            Enter your email and password to create an account.
         </div>
 
         <!-- Flash message to indicate error or success, feel free to edit this with css -->
@@ -384,15 +386,18 @@
         {% endwith %}
 
         <form method="POST" action="{{ url_for('auth.register') }}">
-            <label for="username" class="input-label">Enter your Username:</label>
+            <label for="username" class="input-label">Choose a Username:</label>
             <input type="text" id="username" name="username" class="input-field" placeholder="Your username..." required>
         
-            <label for="confirm_password" class="input-label">Enter your Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="input-field" placeholder="Your password..." required>
+            <label for="password" class="input-label">Create a Password:</label>
+            <input type="password" id="password" name="password" class="input-field" placeholder="Your password..." required>
+        
+            <label for="confirm_password" class="input-label">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="input-field" placeholder="Repeat password..." required>
 
         <div class="button-container">
-            <button type="button" id="acceptBtn" class="system-button">Log In</button>
-            <button type="button" id="declineBtn" class="system-button">Back</button>
+            <button type="submit" id="acceptBtn" class="system-button">Register</button>
+            <button type="submit" id="declineBtn" class="system-button">Back</button>
         </div>
         </form>
 
