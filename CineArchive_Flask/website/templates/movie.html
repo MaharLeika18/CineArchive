@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale">
+    <title>CineArchive - Home</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <section class="topnav">
+            <div class="logo-container">
+                <a href="home.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879378690058/App_Icon_White.png?ex=6820e211&is=681f9091&hm=793ce8a6789b68f481b1bb71f83b9b8cc6a304a31d2a66f98b7980907bfd31a7&=&format=webp&quality=lossless&width=800&height=800" alt="CineArchive Logo">
+                </a>
+                <h2>Cine<i>Archive</i></h2>
+            </div>
+
+            <nav>
+                <a href="films.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818881219858462/Films.png?ex=6820e211&is=681f9091&hm=873d3df783d78d2bfdd009e892d392ee3d5a161e9b54b8d76c2d49985d6837b1&=&format=webp&quality=lossless&width=625&height=625" alt="films button">
+                </a>
+                <a href="watchlists.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879051530410/Checklist.png?ex=6820e211&is=681f9091&hm=2e16d4f246f6da5452af913547939b3890d32ea67130822f606c1fe346dcd7b9&=&format=webp&quality=lossless&width=625&height=625" alt="watchlists button">
+                </a>
+                <a href="random.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818878816653363/Random.png?ex=6820e211&is=681f9091&hm=4d88d9af5ecae20b7f68eab6bf1a38df432495f4881033eda6d744dc2e3c9f20&=&format=webp&quality=lossless&width=625&height=625" alt="random button">
+                </a>
+                <button onclick="openSearch()">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879881740288/Search.png?ex=6820e211&is=681f9091&hm=07963eb57783d8eaa777d8d571acbd7c335293fc4292a8c102d0ab4610e4c2b2&=&format=webp&quality=lossless&width=625&height=625" alt="search button">
+                </button>
+            </nav>
+        </section>
+    </header> 
+
+  <section id="movie-backdrop" class="hero">
+    <div class="hero__content">
+      <img id="movie-logo" class="hero__logo" src="" alt="Movie Logo" />
+    </div>
+  </section>
+
+<main>
+  <div class="metadata-side">
+    <h1>{{ movie.title }} ({{ movie.year }})</h1>
+
+    <p><strong>Directed by:</strong> {{ movie.directors }}</p>
+    <p><strong>Writers:</strong> {{ movie.writers }}</p>
+    <p><strong>Stars:</strong> {{ movie.stars }}</p>
+    <p><strong>Genres:</strong> {{ movie.genres }}</p>
+    <p><strong>Production Companies:</strong> {{ movie.production_companies }}</p>
+    <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+    <p><strong>Duration:</strong> {{ movie.duration }}</p>
+    <p><strong>Rating:</strong> {{ movie.rating }}</p>
+    <p><strong>Languages:</strong> {{ movie.languages }}</p>
+
+    <div class="description-block">
+      <p><strong>Description:</strong></p>
+      <p>{{ movie.description }}</p>
+    </div>
+
+
+  </div>
+</main>
+
+  <footer class="footer">
+    <p>© 2025 CineArchive - All rights reserved</p>
+  </footer>
+
+<!-- Search Modal -->
+  <div id="search-popup" class="search hidden">
+    <div class="search__content">
+      <input type="text" id="searchInput" class="search__input" placeholder="Search for films..." />
+      <button class="search__btn" onclick="fetchSearchResults()">Search</button>
+      <button class="search__btn close" onclick="closeSearch()">Close</button>
+      <div id="search-results" class="search__results"></div>
+    </div>
+  </div>
+
+<script>
+      function openSearch() {
+      document.getElementById('search-popup').classList.remove('hidden');
+    }
+
+    function closeSearch() {
+      document.getElementById('search-popup').classList.add('hidden');
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const query = this.value.trim();
+      if (query) {
+        fetchSearchResults(query);
+      } else {
+        document.getElementById('search-results').innerHTML = '';
+      }
+    });
+
+    function fetchSearchResults(query = '') {
+      if (query.trim() === '') return;
+
+      const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE'
+      const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`;
+
+      fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json;charset=utf-8'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          let resultsHtml = '';
+          if (data.results && data.results.length > 0) {
+            data.results.forEach(movie => {
+              if (movie.poster_path) {
+                resultsHtml += `
+                  <div class="search-result-item" onclick="redirectToMoviePage('${movie.id}')">
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <span>${movie.title}</span>
+                  </div>
+                `;
+              }
+            });
+          } else {
+            resultsHtml = '<p>No results found.</p>';
+          }
+          document.getElementById('search-results').innerHTML = resultsHtml;
+        })
+        .catch(err => {
+          console.error('Error fetching search results:', err);
+          document.getElementById('search-results').innerHTML = '<p>There was an error fetching the results.</p>';
+        });
+    }
+
+    function redirectToMoviePage(movieId) {
+      window.location.href = `movie.html?id=${movieId}`;
+    }
+
+  const API_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE'; 
+
+  async function fetchAPI(url) {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      });
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      console.error('API fetch error:', error);
+      return null;
+    }
+  }
+
+  async function fetchMovieById(movieId) {
+    const images = await fetchAPI(`https://api.themoviedb.org/3/movie/${movieId}/images`);
+    if (!images) return;
+
+    const backdrop = images.backdrops?.[0];
+    const logo = images.logos?.find(img => img.iso_639_1 === 'en') || images.logos?.[0];
+    const poster = images.posters?.[0];
+
+    console.log('Backdrop:', backdrop);
+    console.log('Logo:', logo);
+    console.log('Poster:', poster);
+
+    if (backdrop) {
+      document.getElementById('movie-backdrop').style.backgroundImage =
+        `url(https://image.tmdb.org/t/p/original${backdrop.file_path})`;
+    }
+
+    if (logo) {
+      document.getElementById('movie-logo').src =
+        `https://image.tmdb.org/t/p/original${logo.file_path}`;
+    }
+
+    if (poster) {
+      document.getElementById('movie-poster').src =
+        `https://image.tmdb.org/t/p/w500${poster.file_path}`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) {
+      fetchMovieById(id);
+    } else {
+      console.warn('No "id" query parameter provided.');
+    }
+  });
+</script>
+
+</body>
+</html>

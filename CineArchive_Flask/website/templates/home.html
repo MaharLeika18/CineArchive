@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CineArchive - Home</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <section class="topnav">
+            <div class="logo-container">
+                <a href="home.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879378690058/App_Icon_White.png?ex=6820e211&is=681f9091&hm=793ce8a6789b68f481b1bb71f83b9b8cc6a304a31d2a66f98b7980907bfd31a7&=&format=webp&quality=lossless&width=800&height=800" alt="CineArchive Logo">
+                </a>
+                <h2>Cine<i>Archive</i></h2>
+            </div>
+
+            <nav>
+                <a href="films.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818881219858462/Films.png?ex=6820e211&is=681f9091&hm=873d3df783d78d2bfdd009e892d392ee3d5a161e9b54b8d76c2d49985d6837b1&=&format=webp&quality=lossless&width=625&height=625" alt="films button">
+                </a>
+                <a href="watchlists.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879051530410/Checklist.png?ex=6820e211&is=681f9091&hm=2e16d4f246f6da5452af913547939b3890d32ea67130822f606c1fe346dcd7b9&=&format=webp&quality=lossless&width=625&height=625" alt="watchlists button">
+                </a>
+                <a href="random.html">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818878816653363/Random.png?ex=6820e211&is=681f9091&hm=4d88d9af5ecae20b7f68eab6bf1a38df432495f4881033eda6d744dc2e3c9f20&=&format=webp&quality=lossless&width=625&height=625" alt="random button">
+                </a>
+                <button onclick="openSearch()">
+                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879881740288/Search.png?ex=6820e211&is=681f9091&hm=07963eb57783d8eaa777d8d571acbd7c335293fc4292a8c102d0ab4610e4c2b2&=&format=webp&quality=lossless&width=625&height=625" alt="search button">
+                </button>
+            </nav>
+        </section>
+    </header>
+
+    <!-- Slideshow Section -->
+    <section id="slideshow" class="slideshow-container"></section>
+
+    <footer class="footer">
+        <p>© 2025 CineArchive - All rights reserved</p>
+    </footer>
+
+    <!-- Search Modal -->
+    <div id="search-popup" class="search hidden">
+        <div class="search__content">
+            <input type="text" id="searchInput" class="search__input" placeholder="Search for films..." />
+            <button class="search__btn" onclick="fetchSearchResults()">Search</button>
+            <button class="search__btn close" onclick="closeSearch()">Close</button>
+            <div id="search-results" class="search__results"></div>
+        </div>
+    </div>
+
+    <script>
+        function openSearch() {
+            document.getElementById('search-popup').classList.remove('hidden');
+        }
+
+        function closeSearch() {
+            document.getElementById('search-popup').classList.add('hidden');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const query = this.value.trim();
+            if (query) {
+                fetchSearchResults(query);
+            } else {
+                document.getElementById('search-results').innerHTML = '';
+            }
+        });
+
+        function fetchSearchResults(query = '') {
+            if (query.trim() === '') return;
+
+            const token = 'YOUR_API_TOKEN_HERE';
+            const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`;
+
+            fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json;charset=utf-8'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultsHtml = '';
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(movie => {
+                        if (movie.poster_path) {
+                            resultsHtml += `
+                                <div class="search-result-item" onclick="redirectToMoviePage('${movie.id}')">
+                                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                                    <span>${movie.title}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                } else {
+                    resultsHtml = '<p>No results found.</p>';
+                }
+                document.getElementById('search-results').innerHTML = resultsHtml;
+            })
+            .catch(err => {
+                console.error('Error fetching search results:', err);
+                document.getElementById('search-results').innerHTML = '<p>There was an error fetching the results.</p>';
+            });
+        }
+
+        function redirectToMoviePage(movieId) {
+            window.location.href = `movie.html?id=${movieId}`;
+        }
+
+        // Fetching Popular Movies for Slideshow
+        const token = 'YOUR_API_TOKEN_HERE';
+        fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        })
+        .then(response => response.json())
+        .then(async data => {
+            const movies = data.results.slice(0, 5);
+            const slideshow = document.getElementById('slideshow');
+
+            for (const movie of movies) {
+                const imagesResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}/images`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json;charset=utf-8'
+                    }
+                });
+
+                const imagesData = await imagesResponse.json();
+                const logo = imagesData.logos?.find(img => img.iso_639_1 === 'en') || imagesData.logos?.[0];
+                const backdropPath = movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : '';
+
+                const slide = document.createElement('div');
+                slide.className = 'slide';
+
+                slide.innerHTML = `
+                    <div class="slide-image">
+                        <img src="${backdropPath}" alt="${movie.title}" />
+                    </div>
+                    <div class="slide-logo">
+                        ${logo ? `<img class="slide-logo" src="https://image.tmdb.org/t/p/original${logo.file_path}" alt="${movie.title} Logo" />` : ''}
+                    </div>
+                `;
+
+                slideshow.appendChild(slide);
+            }
+
+            // Basic slideshow cycling
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            if (slides.length > 0) slides[0].style.display = 'block';
+
+            setInterval(() => {
+                slides[currentSlide].style.display = 'none';
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].style.display = 'block';
+            }, 4000);
+        })
+        .catch(error => {
+            console.error('Error loading slideshow:', error);
+        });
+    </script>
+</body>
+</html>
