@@ -7,7 +7,9 @@
   --card-bg: #1e1e27;
   --input-bg: #2e2e38;
 }
-
+.pad {
+  padding: 200px;
+}
 /* Global Reset */
 * {
   margin: 0;
