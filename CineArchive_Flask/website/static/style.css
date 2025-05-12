@@ -80,11 +80,50 @@ button {
 nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 30px;
+  margin-top: 20px;
 }
 
-nav img {
-  height: 28px;
+nav a {
+  text-decoration: none;
+  color: #F4963E; /* Accent orange */
+  font-family: Montserrat, sans-serif;
+}
+
+nav a h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover Effects */
+nav a:hover h2 {
+  color: #fff; /* Text color change on hover */
+  transform: translateY(-5px); /* Slight lift effect */
+}
+
+nav a:hover {
+  padding: 5px 15px;
+}
+
+nav a h2 {
+  position: relative;
+}
+
+nav a h2:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #fff;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s;
+}
+
+nav a:hover h2:after {
+  width: 100%;
 }
 
 /* Footer */
