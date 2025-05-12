@@ -441,7 +441,7 @@
                 </button>
                 <button class="nav-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    <span class="nav-button-text">Settings</span>
+                    <span class="nav-button-text"><p>Logged in as user #{{ current_user.id }} ({{ current_user.username }})</p></span>
                 </button>
         </header>
 
@@ -449,7 +449,7 @@
             <h1>Watchlist</h1>
             <p class="subtitle">All your favorite movies in one place</p>
 
-            <div class="movie-grid" id="movie-grid">
+            <div class="movie-grid" id="movie-grid" data-movies='{{ movies|tojson|safe }}'>
                 <!-- Movie cards will be inserted here imma leave this one to you Mary XD -->
             </div>
         </main>
@@ -506,72 +506,7 @@
     </div>
 
     <script>
-        // Movie data
-        const movies = [
-            {
-                id: 1,
-                title: "The Shape of Water",
-                year: 2017,
-                director: "Guillermo del Toro",
-                genres: ["Drama", "Fantasy"],
-                poster: "https://media.discordapp.net/attachments/1130355826683559947/1370391798811197541/Untitled_design_8.png?ex=6822a011&is=68214e91&hm=7116c3923a95115c31a456b11088d5ec0d380adad2f5fb37ce3edd6aa33d9940&=&format=webp&quality=lossless&width=1934&height=1088",
-                rating: 7.5,
-                plot: "An other-worldly story, set against the backdrop of Cold War era America circa 1962, where a mute janitor working at a lab falls in love with an amphibious man being held captive there and devises a plan to help him escape."
-            },
-            {
-                id: 2,
-                title: "Moonlight",
-                year: 2016,
-                director: "Barry Jenkins",
-                genres: ["Drama"],
-                poster: "https://m.media-amazon.com/images/M/MV5BNzQxNTIyODAxMV5BMl5BanBnXkFtZTgwNzQyMDA3OTE@._V1_.jpg",
-                rating: 7.4,
-                plot: "A young African-American man grapples with his identity and sexuality while experiencing the everyday struggles of childhood, adolescence and burgeoning adulthood."
-            },
-            {
-                id: 3,
-                title: "12 Years a Slave",
-                year: 2013,
-                director: "Solomon Northup",
-                genres: ["Biography", "Drama", "History"],
-                poster: "https://m.media-amazon.com/images/M/MV5BMjExMTEzODkyN15BMl5BanBnXkFtZTcwNTU4NTc4OQ@@._V1_.jpg",
-                rating: 8.1,
-                plot: "In the antebellum United States, Solomon Northup, a free black man from upstate New York, is abducted and sold into slavery."
-            },
-            {
-                id: 4,
-                title: "Argo",
-                year: 2012,
-                director: "Chris Terrio",
-                genres: ["Biography", "Drama", "Thriller"],
-                poster: "https://m.media-amazon.com/images/M/MV5BNzljNjY3MDYtYzc0Ni00YjU0LWIyNDUtNTE0ZDRiMGExMjZlXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
-                rating: 7.7,
-                plot: "Acting under the cover of a Hollywood producer scouting a location for a science fiction film, a CIA agent launches a dangerous operation to rescue six Americans in Tehran during the U.S. hostage crisis in Iran in 1979."
-            },
-            {
-                id: 5,
-                title: "Spotlight",
-                year: 2015,
-                director: "Tom McCarthy",
-                genres: ["Biography", "Crime", "Drama"],
-                poster: "https://m.media-amazon.com/images/M/MV5BMjIyOTM5OTIzNV5BMl5BanBnXkFtZTgwMDkzODE2NjE@._V1_.jpg",
-                rating: 8.1,
-                plot: "The true story of how the Boston Globe uncovered the massive scandal of child molestation and cover-up within the local Catholic Archdiocese, shaking the entire Catholic Church to its core."
-            },
-            {
-                id: 6,
-                title: "Birdman",
-                year: 2014,
-                director: "Alejandro González Iñárritu",
-                genres: ["Comedy", "Drama"],
-                poster: "https://m.media-amazon.com/images/M/MV5BODAzNDMxMzAxOV5BMl5BanBnXkFtZTgwMDMxMjA4MjE@._V1_.jpg",
-                rating: 7.7,
-                plot: "A washed-up superhero actor attempts to revive his fading career by writing, directing, and starring in a Broadway production."
-            }
-        ];
-
         // Elements
-        const movieGrid = document.getElementById('movie-grid');
         const modalOverlay = document.getElementById('modal-overlay');
         const closeModalButton = document.getElementById('close-modal');
         const modalPoster = document.getElementById('modal-poster');
@@ -580,54 +515,102 @@
         const modalGenres = document.getElementById('modal-genres');
         const modalPlot = document.getElementById('modal-plot');
         const modalRating = document.getElementById('modal-rating');
+        const API_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE'; 
+        const movieData = document.querySelector(".movie-grid");
+
+        let rawMovies = document.getElementById("movie-grid").dataset.movies;
+        let movies = JSON.parse(rawMovies);
+
+        async function fetchAPI(url) {
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        Authorization: `Bearer ${API_TOKEN}`,
+                    },
+                });
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('API fetch error:', error);
+                return null;
+            }
+        }
+
+        async function fetchPoster(movieId) {
+            const url = `https://api.themoviedb.org/3/movie/${movieId}/images`;
+
+            const data = await fetchAPI(url);
+
+            if (data && data.posters?.length > 0) {
+                const posterPath = data.posters[0].file_path;
+                return `https://image.tmdb.org/t/p/w500${posterPath}`; // Return the full URL for the poster image
+            } else {
+                return '/static/img/default_poster.png';  // Fallback image if no poster is found
+            }
+        }
 
         // Create movie cards
-        function createMovieCards() {
-            movies.forEach(movie => {
+        async function createMovieCards() {
+            movieData.innerHTML = '';
+
+            for (const movie of movies) {
                 const movieCard = document.createElement('div');
                 movieCard.className = 'movie-card';
-                movieCard.dataset.id = movie.id;
-                
+
+                const posterUrl = await fetchPoster(movie.id);
+
+                console.log('Directors:', movie.directors);
+
                 movieCard.innerHTML = `
                     <div class="movie-poster-container">
-                        <img src="${movie.poster}" alt="${movie.title}" class="movie-poster">
+                        <img src="${posterUrl}" alt="${movie.title}" class="movie-poster">
                     </div>
                     <div class="movie-info">
                         <h3 class="movie-title">${movie.title}</h3>
                         <div class="movie-meta">
-                            <p class="movie-director">${movie.director}</p>
-                            <p class="movie-year">${movie.year}</p>
+                            <p class="movie-director">${movie.directors}</p>
+                            <p class="movie-year">${movie.year || ''}</p>
                         </div>
                     </div>
                 `;
-                
-                movieCard.addEventListener('click', () => openMovieDetails(movie));
-                movieGrid.appendChild(movieCard);
-            });
+
+                movieCard.addEventListener('click', () => openMovieDetails({
+                    ...movie,
+                    poster: posterUrl
+                }));
+
+                movieData.appendChild(movieCard);
+            }
         }
 
-        // Open movie details modal
         function openMovieDetails(movie) {
-            modalPoster.src = movie.poster;
-            modalPoster.alt = movie.title;
-            modalTitle.innerHTML = `${movie.title} <span class="modal-year">${movie.year}</span>`;
-            modalDirector.textContent = movie.director;
-            
-            // Clear and populate genres
+            // Handle missing poster with a fallback
+            modalPoster.src = movie.poster || '/static/img/default_poster.png';
+            modalPoster.alt = movie.title || 'Movie Poster';
+
+            // title and year
+            modalTitle.innerHTML = `${movie.title || 'Untitled'} <span class="modal-year">${movie.year || ''}</span>`;
+
+            const directors = Array.isArray(movie.directors) ? movie.directors : [];
+            modalDirector.textContent = directors[0] || 'Unknown';
+
             modalGenres.innerHTML = '';
-            movie.genres.forEach((genre, index) => {
+            const genres = Array.isArray(movie.genres) ? movie.genres : [];
+
+            genres.forEach((genre, index) => {
                 const genreSpan = document.createElement('span');
                 genreSpan.className = 'modal-genre';
-                genreSpan.textContent = genre;
-                if (index < movie.genres.length - 1) {
-                    genreSpan.textContent += ' | ';
-                }
+                genreSpan.textContent = genre + (index < genres.length - 1 ? ' | ' : '');
                 modalGenres.appendChild(genreSpan);
             });
-            
-            modalPlot.textContent = movie.plot;
-            modalRating.textContent = movie.rating;
-            
+
+            // Plot (description) and rating
+            modalPlot.textContent = movie.description || 'No plot available.';
+            modalRating.textContent = movie.rating != null ? movie.rating : 'N/A';
+
+            // Show modal
             modalOverlay.classList.add('active');
         }
 
@@ -686,6 +669,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             createMovieCards();
             createParticles();
+            console.log(movies[0].title);
         });
     </script>
 </body>

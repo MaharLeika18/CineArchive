@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, curren
 from flask_login import current_user, login_required
 from . import db
 from sqlalchemy import func, text
+import json
+import ast
 
 views = Blueprint('views', __name__)
 
@@ -18,17 +20,41 @@ def check_db_connection():
 def home():
     return render_template('home.html')
 
+@views.route('/test')
+def test():
+    return "Test page works"
+
 @views.route('/watchlist')
 @login_required
 def view_watchlist():
     try:
         stmt = text("CALL get_watchlist_movies(:uid)")
         result = db.session.execute(stmt, {'uid': current_user.id})
-        movies = result.fetchall()
+        row = result.fetchall()
+
+        def parse_movie_row(row):
+            return {
+                "id": row[0],
+                "title": row[1],
+                "year": row[2],
+                "description": row[3],
+                "directors": ast.literal_eval(row[4]),
+                "genres": ast.literal_eval(row[5]),
+                "rating": row[6],
+                "runtime": row[8],
+                "languages": ast.literal_eval(row[9]),
+                "actors": ast.literal_eval(row[10]),
+                "writers": ast.literal_eval(row[11]),
+                "production_companies": ast.literal_eval(row[12])
+            }
+
+        movies = [parse_movie_row(row) for row in row]
+
     except Exception as e:
         current_app.logger.error(f"Error fetching watchlist: {e}")
-        movies = []
-    return render_template('watchlist.html', movies=movies)
+        return render_template("watchlist.html", movies=[])
+    
+    return render_template("watchlist.html", movies=movies)
 
 @views.route('/watchlist/add/<int:movie_id>', methods=['POST'])
 def add_to_watchlist(movie_id):
