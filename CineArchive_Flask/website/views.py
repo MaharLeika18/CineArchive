@@ -29,7 +29,7 @@ def home():
 
 @views.route('/')
 def index():
-    return redirect(url_for('home'))
+    return redirect(url_for('views.home'))
 
 # Route to handle search logic and return JSON
 @views.route('/search')
