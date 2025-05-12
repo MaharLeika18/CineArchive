@@ -33,6 +33,7 @@ main {
   margin: 5rem auto;
   width: 100%;
   max-width: 1200px;
+  padding-bottom: 100px;
 }
 
 /* Image Styling */
@@ -93,6 +94,7 @@ nav img {
   background-color: var(--highlight);
   color: var(--light-text);
   font-size: 0.95rem;
+  padding-top: 100px;
 }
 
 /* Search Popup */
