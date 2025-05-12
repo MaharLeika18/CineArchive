@@ -71,6 +71,7 @@ def search():
 def list_movies():
     title = request.args.get('title')
     directors = request.args.get('directors')
+    stars = request.args.get('stars')
     year = request.args.get('year', type=int)
 
     try:
