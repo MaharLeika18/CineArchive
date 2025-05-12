@@ -4,34 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>CineArchive - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <section class="topnav">
-            <div class="logo-container">
-                <a href="home.html">
-                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879378690058/App_Icon_White.png?ex=6820e211&is=681f9091&hm=793ce8a6789b68f481b1bb71f83b9b8cc6a304a31d2a66f98b7980907bfd31a7&=&format=webp&quality=lossless&width=800&height=800" alt="CineArchive Logo">
-                </a>
-                <h2>Cine<i>Archive</i></h2>
-            </div>
+<header>
+    <section class="topnav">
+      <div class="logo-container">
+        <a href="home.html">
+          <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879378690058/App_Icon_White.png?ex=6820e211&is=681f9091&hm=793ce8a6789b68f481b1bb71f83b9b8cc6a304a31d2a66f98b7980907bfd31a7&=&format=webp&quality=lossless&width=800&height=800" alt="CineArchive Logo">
+        </a>
+        <h2>Cine<i>Archive</i></h2>
+      </div>
 
-            <nav>
-                <a href="http://127.0.0.1:5000/movie">
-                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818881219858462/Films.png?ex=6820e211&is=681f9091&hm=873d3df783d78d2bfdd009e892d392ee3d5a161e9b54b8d76c2d49985d6837b1&=&format=webp&quality=lossless&width=625&height=625" alt="films button">
-                </a>
-                <a href="http://127.0.0.1:5000/watchlist">
-                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879051530410/Checklist.png?ex=6820e211&is=681f9091&hm=2e16d4f246f6da5452af913547939b3890d32ea67130822f606c1fe346dcd7b9&=&format=webp&quality=lossless&width=625&height=625" alt="watchlists button">
-                </a>
-                <a href="http://127.0.0.1:5000/random">
-                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818878816653363/Random.png?ex=6820e211&is=681f9091&hm=4d88d9af5ecae20b7f68eab6bf1a38df432495f4881033eda6d744dc2e3c9f20&=&format=webp&quality=lossless&width=625&height=625" alt="random button">
-                </a>
-                <button onclick="openSearch()">
-                    <img src="https://media.discordapp.net/attachments/1101141739596697601/1370818879881740288/Search.png?ex=6820e211&is=681f9091&hm=07963eb57783d8eaa777d8d571acbd7c335293fc4292a8c102d0ab4610e4c2b2&=&format=webp&quality=lossless&width=625&height=625" alt="search button">
-                </button>
-            </nav>
-        </section>
-    </header>
+      <nav>
+        <a href="films.html">
+          <img src="static/Films.png" alt="films button">
+        </a>
+        <a href="watchlists.html">
+          <img src="static/Checklist.png" alt="watchlists button">
+        </a>
+        <button onclick="openSearch()">
+          <img src="static/Search.png" alt="search button">
+        </button>
+      </nav>
+    </section>
+  </header>
     
     <!-- Slideshow Section -->
     <section id="slideshow" class="slideshow-container"></section>
@@ -44,11 +42,11 @@
   />
 </div>
   <div class="search-container">
-    <form class="search-box" action="movie.html" method="GET">
-      <input type="text" name="query" placeholder="Search movies..." required>
-      <button type="submit">🔍</button>
-    </form>
-  </div>  
+  <form class="search-box" action="search.html" method="GET">
+    <input type="text" name="query" placeholder="Search movies..." required>
+    <button type="submit">🔍</button>
+  </form>
+ </div>
 
     <footer class="footer">
         <p>© 2025 CineArchive - All rights reserved</p>
