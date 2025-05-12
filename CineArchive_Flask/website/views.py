@@ -16,7 +16,7 @@ def check_db_connection():
 
 @views.route('/home')
 def home():
-    return "<h1>Test</h1>"  # Change this into the home template
+    return render_template('home.html')
 
 @views.route('/search')
 def search():
