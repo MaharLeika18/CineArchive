@@ -243,18 +243,29 @@ nav a:hover h2:after {
 }
 
 .search-container {
+  margin-top: 20%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  max-height: 100%;
+  transform: translate(-50%, 80%);;
+  width: 40%;
+  z-index: 5;
+  pointer-events: 9999;
+  border-radius: 5px;
 }
 
 .search-box {
   display: flex;
   background-color: #000;
-  border-radius: 25px;
+  border-radius: 50px;
   padding: 10px 20px;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
@@ -262,7 +273,7 @@ nav a:hover h2:after {
   background: transparent;
   border: none;
   outline: none;
-  color: white;
+  color: var(--accent);
   font-size: 16px;
   flex: 1;
 }
@@ -270,7 +281,7 @@ nav a:hover h2:after {
 .search-box button {
   background: none;
   border: none;
-  color: white;
+  color: var(--accent);
   font-size: 16px;
   cursor: pointer;
 }
@@ -417,13 +428,20 @@ nav a:hover h2:after {
 }
 
 .search-container {
+  margin-top: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   bottom: 20%;
   left: 50%;
-  transform: translateX(-50%);
+  max-height: 100%;
+  transform: translate(-50%, 80%);;
   width: 40%;
   z-index: 5;
   pointer-events: 9999;
+  border-radius: 5px;
 }
 
 .watchlist {
