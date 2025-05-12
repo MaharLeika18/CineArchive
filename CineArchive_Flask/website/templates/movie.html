@@ -12,21 +12,21 @@
     <section class="topnav">
       <div class="logo-container">
         <a href="home.html">
-          <img src="static/White.png" alt="CineArchive Logo">
+          <img src="static/App Icon White.png" alt="CineArchive Logo">
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
 
       <nav>
-        <a href="films.html">
-          <img src="static/Films.png" alt="films button">
+        <a href="/home">
+          <h2>Home</h2>
         </a>
-        <a href="watchlists.html">
-          <img src="static/Checklist.png" alt="watchlists button">
+        <a href="/wathlist">
+          <h2>Watchlist</h2>
         </a>
-        <button onclick="openSearch()">
-          <img src="static/Search.png" alt="search button">
-        </button>
+        <a href="/">
+          <h2>Register</h2>
+        </a>
       </nav>
     </section>
   </header>
@@ -55,7 +55,10 @@
       <p><strong>Description:</strong></p>
       <p>{{ movie.description }}</p>
     </div>
-
+      
+  <div class="add-watchlist">
+  <button type="submit">+ Add to Watchlist</button>
+  </div>
 
   </div>
 </main>
