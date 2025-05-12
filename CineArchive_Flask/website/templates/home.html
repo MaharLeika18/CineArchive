@@ -32,9 +32,23 @@
             </nav>
         </section>
     </header>
-
+    
     <!-- Slideshow Section -->
     <section id="slideshow" class="slideshow-container"></section>
+
+<div class="foreground">
+  <img
+    src="https://media.discordapp.net/attachments/1101141739596697601/1370818880959942786/White.png?ex=68218ad1&is=68203951&hm=1e7d1db5b086604ce4dc28072683c1da14708268f49be5d9e4849625f5efca69&=&format=webp&quality=lossless&width=800&height=800"
+    alt="CineArchive Logo"
+    class="foreground-logo"
+  />
+</div>
+  <div class="search-container">
+    <form class="search-box" action="movie.html" method="GET">
+      <input type="text" name="query" placeholder="Search movies..." required>
+      <button type="submit">🔍</button>
+    </form>
+  </div>  
 
     <footer class="footer">
         <p>© 2025 CineArchive - All rights reserved</p>
@@ -71,7 +85,7 @@
         function fetchSearchResults(query = '') {
             if (query.trim() === '') return;
 
-            const token = 'YOUR_API_TOKEN_HERE';
+            const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
             const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`;
 
             fetch(url, {
@@ -110,7 +124,7 @@
         }
 
         // Fetching Popular Movies for Slideshow
-        const token = 'YOUR_API_TOKEN_HERE';
+        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
         fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -141,9 +155,6 @@
                     <div class="slide-image">
                         <img src="${backdropPath}" alt="${movie.title}" />
                     </div>
-                    <div class="slide-logo">
-                        ${logo ? `<img class="slide-logo" src="https://image.tmdb.org/t/p/original${logo.file_path}" alt="${movie.title} Logo" />` : ''}
-                    </div>
                 `;
 
                 slideshow.appendChild(slide);
@@ -164,5 +175,6 @@
             console.error('Error loading slideshow:', error);
         });
     </script>
+
 </body>
 </html>
