@@ -23,7 +23,7 @@ def check_db_connection():
     except Exception as e:
         current_app.logger.error(f"Error connecting to database: {e}")
 
-@views.route('/home')
+@views.route('/')
 def home():
     return render_template('home.html')
 
