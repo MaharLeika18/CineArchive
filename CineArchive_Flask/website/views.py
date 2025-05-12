@@ -33,21 +33,6 @@ def search():
 
     return render_template('search.html', results=results, query=query)
 
-# View full movie details - poster (using api), title, director, release date
-@views.route('/movie/<string:movie_id>')
-def movie_details(movie_id):
-    try:
-        stmt = text("CALL get_movie_details(:movie_id_param)")
-        result = db.session.execute(stmt, {'movie_id_param': movie_id})
-        movie = result.mappings().fetchone()  # Single row as dict
-        if not movie:
-            return render_template('404.html'), 404
-    except Exception as e:
-        current_app.logger.error(f"Error fetching movie details: {e}")
-        return render_template('500.html'), 500
-
-    return render_template('movie_details.html', movie=movie)
-
 @views.route('/watchlist')
 @login_required
 def view_watchlist():
@@ -97,7 +82,22 @@ def list_movies():
         current_app.logger.error(f"Error fetching filtered movies: {e}")
         movies = []
 
-    return render_template('movies.html', movies=movies, title=title, directors=directors, year=year)
+    return render_template('movie.html', movies=movies, title=title, directors=directors, year=year)
+
+# View full movie details - poster (using api), title, director, release date
+@views.route('/movie/<string:movie_id>')
+def movie_details(movie_id):
+    try:
+        stmt = text("CALL get_movie_details(:movie_id_param)")
+        result = db.session.execute(stmt, {'movie_id_param': movie_id})
+        movie = result.mappings().fetchone()  # Single row as dict
+        if not movie:
+            return render_template('404.html'), 404
+    except Exception as e:
+        current_app.logger.error(f"Error fetching movie details: {e}")
+        return render_template('500.html'), 500
+
+    return render_template('movie_details.html', movie=movie)
 
 # Random movie function
 @views.route('/random')
