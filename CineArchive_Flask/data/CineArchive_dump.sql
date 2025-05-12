@@ -80,11 +80,11 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(150) NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'test','hashedpassword'),(2,'Loue','scrypt:32768:8:1$1TmciEF45QIf35C6$9dbf742c8289d69eee3c6024b46a8c5e86902c6fa8c59704fb0d420d41197c6bd60a87293541ed806d0332802cebbb00583381723479829e1f28ba3a444b397a'),(4,'1','scrypt:32768:8:1$Wg5Miw8XUaICpaks$dd6be9d32df2413d9845608d248504a5ed08cb9dda6e16f00f82e3cd4a98e48d93b88895b6bffa55c2e24e1f074e32aae0f3a111d4f93315b6fee1bcd8a8bf62');
+INSERT INTO `users` VALUES (1,'test','hashedpassword'),(2,'Loue','scrypt:32768:8:1$1TmciEF45QIf35C6$9dbf742c8289d69eee3c6024b46a8c5e86902c6fa8c59704fb0d420d41197c6bd60a87293541ed806d0332802cebbb00583381723479829e1f28ba3a444b397a'),(4,'1','scrypt:32768:8:1$Wg5Miw8XUaICpaks$dd6be9d32df2413d9845608d248504a5ed08cb9dda6e16f00f82e3cd4a98e48d93b88895b6bffa55c2e24e1f074e32aae0f3a111d4f93315b6fee1bcd8a8bf62'),(5,'testuser','hashed_password_here');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,4 +353,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-12 14:55:45
+-- Dump completed on 2025-05-12 15:33:12

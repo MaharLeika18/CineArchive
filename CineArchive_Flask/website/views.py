@@ -18,21 +18,6 @@ def check_db_connection():
 def home():
     return render_template('home.html')
 
-@views.route('/search')
-def search():
-    query = request.args.get('q', '')
-    results = []
-
-    if query:
-        try:
-            stmt = text("CALL search_movies(:query_text)")
-            result_proxy = db.session.execute(stmt, {'query_text': query})
-            results = result_proxy.mappings().all()
-        except Exception as e:
-            current_app.logger.error(f"Stored procedure error: {e}")
-
-    return render_template('search.html', results=results, query=query)
-
 @views.route('/watchlist')
 @login_required
 def view_watchlist():
@@ -64,6 +49,22 @@ def remove_from_watchlist(movie_id):
     except Exception as e:
         current_app.logger.error(f"Error removing from watchlist: {e}")
     return redirect(url_for('views.view_watchlist'))
+
+# Search for movie
+@views.route('/search')
+def search():
+    query = request.args.get('q', '')
+    results = []
+
+    if query:
+        try:
+            stmt = text("CALL search_movies(:query_text)")
+            result_proxy = db.session.execute(stmt, {'query_text': query})
+            results = result_proxy.mappings().all()
+        except Exception as e:
+            current_app.logger.error(f"Stored procedure error: {e}")
+
+    return render_template('search.html', results=results, query=query)
 
 # List all films function + filtering
 @views.route('/movie', methods=['GET'])

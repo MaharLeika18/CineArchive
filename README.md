@@ -23,11 +23,11 @@ Then, run the CineArchive_requirement.bat file.
 
 ** Make sure to start an sql server on ur device. Here are the links [for Mac](https://youtu.be/ODA3rWfmzg8?si=Hpyy9UMTYXhx0AbV) and [for Windows](https://youtu.be/u96rVINbAUI?si=pKmJOFIRgz-LYiqm). Note that I haven't tested the one for Windows so you guys may have to figure that out urselves XD
 
-** Create a database, either following the tutorial or by running this code in MySQL: `CREATE DATABASE cinearchive CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+** Create a database, either following the tutorial or by running this code in MySQL: `CREATE DATABASE cinearchive CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;`
 
 ** Then, follow the steps listed in the .env.example file
 
-** Run this in the VSCode terminal (replace the temp values ofc): `mysql -u your_mysql_username -p cinearchive < CineArchive_Flask/data/CineArchive_dump.sql`
+** Run this in the VSCode terminal: `mysql -u root -p --default-character-set=utf8mb4 CineArchive < dump.sql`
     NOTE: You guys will have to run this line everytime anyone else updates the database. Also, double check the file name and ensure that it's set to the latest vers.
     If you guys do make changes to the database, run this code in the VSCode terminal: `mysqldump -u root -p --routines CineArchive > CineArchive_dump#.sql`
     Don't replace old sql dump files (just to be safe, we can delete it later on), append and increment the # symbol with corresponding numbers.
