@@ -80,45 +80,61 @@
             }
         });
 
-        function fetchSearchResults(query = '') {
-            if (query.trim() === '') return;
+        function fetchSearchResults() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query === '') return;
 
-            const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
-            const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`;
+            fetch(`/search?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(async data => {
+                    let resultsHtml = '';
 
-            fetch(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json;charset=utf-8'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                let resultsHtml = '';
-                if (data.results && data.results.length > 0) {
-                    data.results.forEach(movie => {
-                        if (movie.poster_path) {
+                    if (data.length > 0) {
+                        for (const movie of data) {
+                            const posterUrl = await fetchPoster(movie.title);
+                            const movieId = movie.id || movie.title;
                             resultsHtml += `
-                                <div class="search-result-item" onclick="redirectToMoviePage('${movie.id}')">
-                                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                                <div class="search-result-item" onclick="redirectToMoviePage('${movieId}')">
+                                    ${posterUrl ? `<img src="${posterUrl}" alt="${movie.title}">` : ''}
                                     <span>${movie.title}</span>
                                 </div>
                             `;
                         }
-                    });
-                } else {
-                    resultsHtml = '<p>No results found.</p>';
+                            } else {
+                        resultsHtml = '<p>No results found.</p>';
+                    }
+
+                    document.getElementById('search-results').innerHTML = resultsHtml;
+                })
+                .catch(err => {
+                    console.error('Error fetching search results:', err);
+                    document.getElementById('search-results').innerHTML = '<p>There was an error fetching the results.</p>';
+                });
+        }
+
+        async function fetchPoster(title) {
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
+                const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}`;
+                const response = await fetch(url, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json;charset=utf-8'
+                    }
+                });
+                const data = await response.json();
+                const movie = data.results?.[0];
+                if (movie?.poster_path) {
+                    return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
                 }
-                document.getElementById('search-results').innerHTML = resultsHtml;
-            })
-            .catch(err => {
-                console.error('Error fetching search results:', err);
-                document.getElementById('search-results').innerHTML = '<p>There was an error fetching the results.</p>';
-            });
+            } catch (err) {
+                console.error('Error fetching poster:', err);
+            }
+            return null;
         }
 
         function redirectToMoviePage(movieId) {
-            window.location.href = `movie.html?id=${movieId}`;
+            window.location.href =`/movie/${movieId}`;
         }
 
         // Fetching Popular Movies for Slideshow
