@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>CineArchive - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <section class="topnav">
+      <div class="logo-container">
+        <a href="/">
+            <img src="static/White.png" alt="CineArchive Logo">
+        </a>
+        <h2>Cine<i>Archive</i></h2>
+      </div>
+
+      <nav>
+        <a href="/movie">
+          <img src="static/Films.png" alt="films button">
+        </a>
+        <a href="/watchlist">
+          <img src="static/Checklist.png" alt="watchlists button">
+        </a>
+        <button onclick="openSearch()">
+          <img src="static/Search.png" alt="search button">
+        </button>
+      </nav>
+    </section>
+  </header>
+    
+    <!-- Slideshow Section -->
+    <section id="slideshow" class="slideshow-container"></section>
+
+<div class="foreground">
+  <img
+    src="https://media.discordapp.net/attachments/1101141739596697601/1370818880959942786/White.png?ex=68218ad1&is=68203951&hm=1e7d1db5b086604ce4dc28072683c1da14708268f49be5d9e4849625f5efca69&=&format=webp&quality=lossless&width=800&height=800"
+    alt="CineArchive Logo"
+    class="foreground-logo"
+  />
+</div>
+  <div class="search-container">
+  <form class="search-box" action="search.html" method="GET">
+    <input type="text" name="query" placeholder="Search movies..." required>
+    <button type="submit">🔍</button>
+  </form>
+ </div>
+
+    <footer class="footer">
+        <p>© 2025 CineArchive - All rights reserved</p>
+    </footer>
+
+    <!-- Search Modal -->
+    <div id="search-popup" class="search hidden">
+        <div class="search__content">
+            <input type="text" id="searchInput" class="search__input" placeholder="Search for films..." />
+            <button class="search__btn" onclick="fetchSearchResults()">Search</button>
+            <button class="search__btn close" onclick="closeSearch()">Close</button>
+            <div id="search-results" class="search__results"></div>
+        </div>
+    </div>
+
+    <script>
+        function openSearch() {
+            document.getElementById('search-popup').classList.remove('hidden');
+        }
+
+        function closeSearch() {
+            document.getElementById('search-popup').classList.add('hidden');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const query = this.value.trim();
+            if (query) {
+                fetchSearchResults(query);
+            } else {
+                document.getElementById('search-results').innerHTML = '';
+            }
+        });
+
+        function fetchSearchResults() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query === '') return;
+
+            fetch(`/search?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(async data => {
+                    let resultsHtml = '';
+
+                    if (data.length > 0) {
+                        for (const movie of data) {
+                            const posterUrl = await fetchPoster(movie.title);
+                            const movieId = movie.id || movie.title;
+                            resultsHtml += `
+                                <div class="search-result-item" onclick="redirectToMoviePage('${movieId}')">
+                                    ${posterUrl ? `<img src="${posterUrl}" alt="${movie.title}">` : ''}
+                                    <span>${movie.title}</span>
+                                </div>
+                            `;
+                        }
+                            } else {
+                        resultsHtml = '<p>No results found.</p>';
+                    }
+
+                    document.getElementById('search-results').innerHTML = resultsHtml;
+                })
+                .catch(err => {
+                    console.error('Error fetching search results:', err);
+                    document.getElementById('search-results').innerHTML = '<p>There was an error fetching the results.</p>';
+                });
+        }
+
+        async function fetchPoster(title) {
+            try {
+                const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
+                const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(title)}`;
+                const response = await fetch(url, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json;charset=utf-8'
+                    }
+                });
+                const data = await response.json();
+                const movie = data.results?.[0];
+                if (movie?.poster_path) {
+                    return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                }
+            } catch (err) {
+                console.error('Error fetching poster:', err);
+            }
+            return null;
+        }
+
+        function redirectToMoviePage(movieId) {
+            window.location.href =`/movie/${movieId}`;
+        }
+
+        // Fetching Popular Movies for Slideshow
+        const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
+        fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        })
+        .then(response => response.json())
+        .then(async data => {
+            const movies = data.results.slice(0, 5);
+            const slideshow = document.getElementById('slideshow');
+
+            for (const movie of movies) {
+                const imagesResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}/images`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json;charset=utf-8'
+                    }
+                });
+
+                const imagesData = await imagesResponse.json();
+                const logo = imagesData.logos?.find(img => img.iso_639_1 === 'en') || imagesData.logos?.[0];
+                const backdropPath = movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : '';
+
+                const slide = document.createElement('div');
+                slide.className = 'slide';
+
+                slide.innerHTML = `
+                    <div class="slide-image">
+                        <img src="${backdropPath}" alt="${movie.title}" />
+                    </div>
+                `;
+
+                slideshow.appendChild(slide);
+            }
+
+            // Basic slideshow cycling
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            if (slides.length > 0) slides[0].style.display = 'block';
+
+            setInterval(() => {
+                slides[currentSlide].style.display = 'none';
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].style.display = 'block';
+            }, 4000);
+        })
+        .catch(error => {
+            console.error('Error loading slideshow:', error);
+        });
+    </script>
+
+</body>
+</html>

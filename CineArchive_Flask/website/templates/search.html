@@ -1,25 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Search Results</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineArchive - Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Search Results for "{{ query }}"</h1>
 
-    {% if results %}
-        <ul>
-            {% for result in results %}
-                <li>
-                    <strong><a href="{{ url_for('views.movie_details', movie_id=result.id) }}">
-                        {{ result.title }}
-                    </a></strong> ({{ result.year }})<br>
-                    Directed by: {{ result.directors }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No results found.</p>
-    {% endif %}
+<header>
+    <section class="topnav">
+      <div class="logo-container">
+        <a href="home.html">
+          <img src="static/White.png" alt="CineArchive Logo">
+        </a>
+        <h2>Cine<i>Archive</i></h2>
+      </div>
+
+      <nav>
+        <a href="films.html">
+          <img src="static/Films.png" alt="films button">
+        </a>
+        <a href="watchlists.html">
+          <img src="static/Checklist.png" alt="watchlists button">
+        </a>
+        <button onclick="openSearch()">
+          <img src="static/Search.png" alt="search button">
+        </button>
+      </nav>
+    </section>
+  </header>
+
+  <main style="flex-direction: column; align-items: center; width: 100%;  ">
+    <h4 id="search-title"></h4>
+    <!-- This section will display search results from the query -->
+    <div id="search-results" class="search__results" style="width: 50%; background-color: #191923; height: auto; overflow-y: visible;"></div>
+  </main>
+
+  <!-- Search Modal -->
+  <div id="search-popup" class="search hidden">
+    <div class="search__content">
+      <input type="text" id="modalSearchInput" class="search__input" placeholder="Search for films..." />
+      <button class="search__btn" onclick="fetchSearchResults(true)">Search</button>
+      <button class="search__btn close" onclick="closeSearch()">Close</button>
+      <div id="modal-search-results" class="search__results"></div>
+    </div>
+  </div>
+
+
+  <script>
+    const API_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
+
+// query parameter from the URL
+window.addEventListener('load', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const query = urlParams.get('query');  // Get the query value
+
+  if (query) {
+    // Trigger the search functionality using the query from the URL
+    document.getElementById('search-results').innerHTML = '<p>Loading...</p>';
+    fetchSearchResults(query);
+  }
+});
+
+// modify to query
+function fetchSearchResults(query, isModal = false) {
+  const container = isModal ? document.getElementById('modal-search-results') : document.getElementById('search-results');
+  
+  if (!query) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = '<p>Loading...</p>';
+
+  const url = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}`;
+
+  fetch(url, {
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      'Content-Type': 'application/json;charset=utf-8'
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.results || data.results.length === 0) {
+      container.innerHTML = '<p>No results found.</p>';
+      return;
+    }
+    document.getElementById('search-title').textContent = `Search results for '${query}'`;
+
+    const filteredResults = data.results.filter(movie => movie.poster_path);
+
+    container.innerHTML = data.results
+      .filter(movie => movie.poster_path)
+      .map(movie => `
+        <div class="search-result-item" onclick="redirectToMoviePage('${movie.id}')">
+          <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+          <span>${movie.title}</span>
+        </div>
+      `).join('');
+  })
+  .catch(err => {
+    console.error(err);
+    container.innerHTML = '<p>Failed to fetch results.</p>';
+  });
+}
+
+    function redirectToMoviePage(id) {
+      window.location.href = `movie.html?id=${id}`;
+    }
+
+    function openSearch() {
+      document.getElementById('search-popup').classList.remove('hidden');
+      document.getElementById('modalSearchInput').focus();
+    }
+    function closeSearch() {
+      document.getElementById('search-popup').classList.add('hidden');
+      document.getElementById('modal-search-results').innerHTML = '';
+      document.getElementById('modalSearchInput').value = '';
+    }
+
+    document.getElementById('modalSearchInput').addEventListener('input', () => fetchSearchResults(true));
+
+    // If the page URL has a query, fetch results on page load
+    window.addEventListener('load', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get('query');
+      if (query) {
+        document.getElementById('search-results').innerHTML = '<p>Loading...</p>';
+        fetchSearchResults(query); 
+      }
+    });
+  </script>
+
 </body>
-</html>
+</htm

@@ -1,9 +1,18 @@
-from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
+from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash, jsonify
 from flask_login import current_user, login_required
 from . import db
 from sqlalchemy import func, text
+import ast
+import re
 
 views = Blueprint('views', __name__)
+
+def clean_string(input_str):
+    cleaned_str = re.sub(r'[\[\]"\'\s]+', ' ', input_str)
+    cleaned_str = re.sub(r'\s*,\s*', ', ', cleaned_str)
+    cleaned_str = re.sub(r',\s*,+', ',', cleaned_str)
+    cleaned_str = re.sub(r'\s+', ' ', cleaned_str)
+    return cleaned_str.strip()
 
 @views.before_app_request
 def check_db_connection():
@@ -14,39 +23,25 @@ def check_db_connection():
     except Exception as e:
         current_app.logger.error(f"Error connecting to database: {e}")
 
-@views.route('/home')
+@views.route('/')
 def home():
-    return "<h1>Test</h1>"  # Change this into the home template
+    return render_template('home.html')
 
+# Route to handle search logic and return JSON
 @views.route('/search')
 def search():
-    query = request.args.get('q', '')
-    results = []
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify([])
 
-    if query:
-        try:
-            stmt = text("CALL search_movies(:query_text)")
-            result_proxy = db.session.execute(stmt, {'query_text': query})
-            results = result_proxy.mappings().all()
-        except Exception as e:
-            current_app.logger.error(f"Stored procedure error: {e}")
-
-    return render_template('search.html', results=results, query=query)
-
-# View full movie details - poster (using api), title, director, release date
-@views.route('/movie/<string:movie_id>')
-def movie_details(movie_id):
     try:
-        stmt = text("CALL get_movie_details(:movie_id_param)")
-        result = db.session.execute(stmt, {'movie_id_param': movie_id})
-        movie = result.mappings().fetchone()  # Single row as dict
-        if not movie:
-            return render_template('404.html'), 404
+        stmt = text("CALL search_movies(:query_text)")
+        results = db.session.execute(stmt, {'query_text': query.lower()}).mappings().fetchall()
+        movies = [dict(row) for row in results]
+        return jsonify(movies)
     except Exception as e:
-        current_app.logger.error(f"Error fetching movie details: {e}")
-        return render_template('500.html'), 500
-
-    return render_template('movie_details.html', movie=movie)
+        current_app.logger.error(f"Error in search_movies: {e}")
+        return jsonify([]), 500
 
 @views.route('/watchlist')
 @login_required
@@ -54,11 +49,31 @@ def view_watchlist():
     try:
         stmt = text("CALL get_watchlist_movies(:uid)")
         result = db.session.execute(stmt, {'uid': current_user.id})
-        movies = result.fetchall()
+        row = result.fetchall()
+
+        def parse_movie_row(row):
+            return {
+                "id": row[0],
+                "title": row[1],
+                "year": row[2],
+                "description": row[3],
+                "directors": clean_string(row[4]),
+                "genres": ast.literal_eval(row[5]),
+                "rating": row[6],
+                "runtime": row[8],
+                "languages": ast.literal_eval(row[9]),
+                "actors": ast.literal_eval(row[10]),
+                "writers": ast.literal_eval(row[11]),
+                "production_companies": ast.literal_eval(row[12])
+            }
+
+        movies = [parse_movie_row(row) for row in row]
+
     except Exception as e:
         current_app.logger.error(f"Error fetching watchlist: {e}")
-        movies = []
-    return render_template('watchlist.html', movies=movies)
+        return render_template("watchlist.html", movies=[])
+    
+    return render_template("watchlist.html", movies=movies)
 
 @views.route('/watchlist/add/<int:movie_id>', methods=['POST'])
 def add_to_watchlist(movie_id):
@@ -85,6 +100,7 @@ def remove_from_watchlist(movie_id):
 def list_movies():
     title = request.args.get('title')
     directors = request.args.get('directors')
+    stars = request.args.get('stars')
     year = request.args.get('year', type=int)
 
     try:
@@ -97,7 +113,32 @@ def list_movies():
         current_app.logger.error(f"Error fetching filtered movies: {e}")
         movies = []
 
-    return render_template('movies.html', movies=movies, title=title, directors=directors, year=year)
+    return render_template('movie.html', movies=movies, title=title, directors=directors, year=year)
+
+# View full movie details - poster (using api), title, director, release date
+@views.route('/movie/<string:movie_id>')
+def movie_details(movie_id):
+    try:
+        stmt = text("CALL get_movie_details(:movie_id_param)")
+        result = db.session.execute(stmt, {'movie_id_param': movie_id})
+        movie = result.mappings().fetchone()  # Single row as dict
+        if not movie:
+            return render_template('404.html'), 404
+        
+        movie = dict(movie)
+
+        movie['directors'] = clean_string(str(movie['directors']))
+        movie['writers'] = clean_string(str(movie['writers']))
+        movie['stars'] = clean_string(str(movie['stars']))
+        movie['genres'] = clean_string(str(movie['genres']))
+        movie['production_companies'] = clean_string(str(movie['production_companies']))
+        movie['languages'] = clean_string(str(movie['languages']))
+
+    except Exception as e:
+        current_app.logger.error(f"Error fetching movie details: {e}")
+        return render_template('500.html'), 500
+
+    return render_template('movie.html', movie=movie)
 
 # Random movie function
 @views.route('/random')
