@@ -426,19 +426,27 @@ nav a:hover h2:after {
   pointer-events: 9999;
 }
 
-.add-watchlist {
+.watchlist {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.add-watchlist button {
+.add-watchlist, .rem-watchlist {
+  display:flex;
+  padding:1rem;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.add-watchlist button, .rem-watchlist button {
   background: rgba(244, 150, 62, 0.15); /* Subtle orange tint */
   color: #F4963E;
   border: 2px solid #F4963E;
   font-family: Montserrat, sans-serif;
   font-size: 16px;
   font-weight: 600;
+  width: 300px;
   padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;
@@ -447,7 +455,7 @@ nav a:hover h2:after {
   box-shadow: 0 0 10px rgba(244, 150, 62, 0.2);
 }
 
-.add-watchlist button:hover {
+.add-watchlist button:hover, .rem-watchlist button:hover {
   background: #F4963E;
   color: #111;
   transform: scale(1.05);
