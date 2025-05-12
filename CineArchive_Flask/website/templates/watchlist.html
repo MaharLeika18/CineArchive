@@ -492,7 +492,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                             <span>DIRECTOR</span>
                         </button>
-                        <button class="action-button">
+                        <button class="action-button" id="info-button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                             <span>INFO</span>
                         </button>
@@ -611,8 +611,19 @@
             modalPlot.textContent = movie.description || 'No plot available.';
             modalRating.textContent = movie.rating != null ? movie.rating : 'N/A';
 
+            // Attach redirect handler
+            const infoBtn = document.getElementById('info-button');
+            if (infoBtn) {
+                infoBtn.onclick = () => redirectToMoviePage(movie.id);
+            }
+
             // Show modal
             modalOverlay.classList.add('active');
+        }
+
+        // Redirect
+        function redirectToMoviePage(movieId) {
+            window.location.href = `/movie/${movieId}`;
         }
 
         // Close movie details modal

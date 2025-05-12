@@ -23,9 +23,13 @@ def check_db_connection():
     except Exception as e:
         current_app.logger.error(f"Error connecting to database: {e}")
 
-@views.route('/')
+@views.route('/home')
 def home():
     return render_template('home.html')
+
+@views.route('/')
+def index():
+    return redirect(url_for('home'))
 
 # Route to handle search logic and return JSON
 @views.route('/search')
@@ -75,17 +79,19 @@ def view_watchlist():
     
     return render_template("watchlist.html", movies=movies)
 
-@views.route('/watchlist/add/<int:movie_id>', methods=['POST'])
+@views.route('/watchlist/add/<string:movie_id>', methods=['POST'])
 def add_to_watchlist(movie_id):
     try:
         stmt = text("CALL add_to_watchlist(:uid, :mid)")
         db.session.execute(stmt, {'uid': current_user.id, 'mid': str(movie_id)})
         db.session.commit()
+        flash('Movie added to watchlist!', 'success')
     except Exception as e:
         current_app.logger.error(f"Error adding to watchlist: {e}")
+        flash('Failed to add movie to watchlist.', 'error')
     return redirect(url_for('views.view_watchlist'))
 
-@views.route('/watchlist/remove/<int:movie_id>', methods=['POST'])
+@views.route('/watchlist/remove/<string:movie_id>', methods=['POST'])
 def remove_from_watchlist(movie_id):
     try:
         stmt = text("CALL remove_from_watchlist(:uid, :mid)")
