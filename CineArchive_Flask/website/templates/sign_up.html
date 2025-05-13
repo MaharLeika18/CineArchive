@@ -397,7 +397,7 @@
 
         <div class="button-container">
             <button type="submit" id="acceptBtn" class="system-button">Register</button>
-            <button type="submit" id="declineBtn" class="system-button">Back</button>
+            <button type="button" class="system-button" onclick="window.location.href='{{ back_url or url_for('views.home') }}'">Back</button>
         </div>
         </form>
 
