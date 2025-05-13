@@ -101,26 +101,6 @@ def remove_from_watchlist(movie_id):
         current_app.logger.error(f"Error removing from watchlist: {e}")
     return redirect(url_for('views.view_watchlist'))
 
-# List all films function + filtering
-@views.route('/movie', methods=['GET'])
-def list_movies():
-    title = request.args.get('title')
-    directors = request.args.get('directors')
-    stars = request.args.get('stars')
-    year = request.args.get('year', type=int)
-
-    try:
-        result = db.session.execute(
-            text("CALL list_movies_filtered(:title, :directors, :year)"),
-            {"title": title, "directors": directors, "year": year}
-        )
-        movies = [dict(row._mapping) for row in result.fetchall()]
-    except Exception as e:
-        current_app.logger.error(f"Error fetching filtered movies: {e}")
-        movies = []
-
-    return render_template('movie.html', movies=movies, title=title, directors=directors, year=year)
-
 # View full movie details - poster (using api), title, director, release date
 @views.route('/movie/<string:movie_id>')
 def movie_details(movie_id):
@@ -155,8 +135,19 @@ def random_movie():
         movie = result.mappings().fetchone()
         if not movie:
             return render_template('404notfound.html', message="No movies found."), 404
+        
+        movie = dict(movie)
+
+        movie['id'] = (str(movie['id']))
+        movie['directors'] = clean_string(str(movie['directors']))
+        movie['writers'] = clean_string(str(movie['writers']))
+        movie['stars'] = clean_string(str(movie['stars']))
+        movie['genres'] = clean_string(str(movie['genres']))
+        movie['production_companies'] = clean_string(str(movie['production_companies']))
+        movie['languages'] = clean_string(str(movie['languages']))
+
     except Exception as e:
         current_app.logger.error(f"Error fetching random movie: {e}")
         return render_template('500.html'), 500
 
-    return render_template('movie_details.html', movie=movie)
+    return redirect(url_for('views.movie_details', movie_id=movie['id']))

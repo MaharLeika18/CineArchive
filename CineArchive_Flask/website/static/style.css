@@ -83,7 +83,6 @@ nav {
   display: flex;
   align-items: center;
   gap: 30px;
-  margin-top: 20px;
 }
 
 nav a {
@@ -103,10 +102,7 @@ nav a h2 {
 nav a:hover h2 {
   color: #fff; /* Text color change on hover */
   transform: translateY(-5px); /* Slight lift effect */
-}
-
-nav a:hover {
-  padding: 5px 15px;
+  text-shadow: 0 0 10px #fff;
 }
 
 nav a h2 {
