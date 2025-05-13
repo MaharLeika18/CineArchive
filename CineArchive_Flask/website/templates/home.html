@@ -40,27 +40,23 @@
     alt="CineArchive Logo"
     class="foreground-logo"
   />
-</div>
-  <div class="search-container">
-  <form class="search-box" action="search.html" method="GET">
-    <input type="text" name="query" placeholder="Search movies..." required>
-    <button type="submit">🔍</button>
+    
+<div class="search-container">
+  <form class="search-box" onclick="fetchSearchResults()" method="GET">
+    <input type="text" id="searchInput" class="search__input" placeholder="Search..." />
+    <button class="search__btn" onclick="openSearch()"> 🔍</button>
   </form>
+  
+  <div id="search-results" class="search__results"></div>
+</div>
  </div>
-
+    
+<div class="pad"></div>
+    
     <footer class="footer">
         <p>© 2025 CineArchive - All rights reserved</p>
     </footer>
 
-    <!-- Search Modal -->
-    <div id="search-popup" class="search hidden">
-        <div class="search__content">
-            <input type="text" id="searchInput" class="search__input" placeholder="Search for films..." />
-            <button class="search__btn" onclick="fetchSearchResults()">Search</button>
-            <button class="search__btn close" onclick="closeSearch()">Close</button>
-            <div id="search-results" class="search__results"></div>
-        </div>
-    </div>
 
     <script>
         function openSearch() {
