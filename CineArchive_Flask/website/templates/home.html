@@ -12,21 +12,26 @@
     <section class="topnav">
       <div class="logo-container">
         <a href="/">
-            <img src="static/White.png" alt="CineArchive Logo">
+            <!-- <img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo"> -->
+            <img src="https://media.discordapp.net/attachments/1130355826683559947/1371508556884348968/8.png?ex=68236461&is=682212e1&hm=db2a5c52218194e16dd3d25935cb2d6a9cdf4bd243949a00693549b990628387&=&format=webp&quality=lossless&width=1296&height=1296" alt="CineArchive Logo" class="logo">
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
 
       <nav>
-        <a href="/movie">
-          <img src="static/Films.png" alt="films button">
-        </a>
+        
         <a href="/watchlist">
-          <img src="static/Checklist.png" alt="watchlists button">
+          <h2>Watchlist</h2>
         </a>
-        <button onclick="openSearch()">
-          <img src="static/Search.png" alt="search button">
-        </button>
+        <a href="/login">
+            <h2>Login</h2>
+          </a>
+        <a href="/register">
+          <h2>Register</h2>
+        </a>
+        <a href="{{ url_for('views.random_movie')}}">
+            <h2>Random</h2>
+        </a>
       </nav>
     </section>
   </header>
@@ -38,29 +43,24 @@
   <img
     src="https://media.discordapp.net/attachments/1101141739596697601/1370818880959942786/White.png?ex=68218ad1&is=68203951&hm=1e7d1db5b086604ce4dc28072683c1da14708268f49be5d9e4849625f5efca69&=&format=webp&quality=lossless&width=800&height=800"
     alt="CineArchive Logo"
-    class="foreground-logo"
-  />
+    class="foreground-logo">
 </div>
-  <div class="search-container">
-  <form class="search-box" action="search.html" method="GET">
-    <input type="text" name="query" placeholder="Search movies..." required>
-    <button type="submit">🔍</button>
+    
+<div class="search-container">
+  <form class="search-box" onclick="fetchSearchResults()" method="GET">
+    <input type="text" id="searchInput" class="search__input" placeholder="Search..." />
   </form>
+  
+  <div id="search-results" class="search__results"></div>
+</div>
  </div>
-
+    
+<div class="pad"></div>
+    
     <footer class="footer">
         <p>© 2025 CineArchive - All rights reserved</p>
     </footer>
 
-    <!-- Search Modal -->
-    <div id="search-popup" class="search hidden">
-        <div class="search__content">
-            <input type="text" id="searchInput" class="search__input" placeholder="Search for films..." />
-            <button class="search__btn" onclick="fetchSearchResults()">Search</button>
-            <button class="search__btn close" onclick="closeSearch()">Close</button>
-            <div id="search-results" class="search__results"></div>
-        </div>
-    </div>
 
     <script>
         function openSearch() {

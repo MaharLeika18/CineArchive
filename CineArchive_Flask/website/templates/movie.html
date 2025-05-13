@@ -12,21 +12,22 @@
     <section class="topnav">
       <div class="logo-container">
         <a href="/">
-          <img src="static/White.png" alt="CineArchive Logo">
+          <!-- <img src="{{ url_for('static', filename='img/App_Icon_White.png') }}" alt="CineArchive Logo"> -->
+          <img src="https://media.discordapp.net/attachments/1130355826683559947/1371508556884348968/8.png?ex=68236461&is=682212e1&hm=db2a5c52218194e16dd3d25935cb2d6a9cdf4bd243949a00693549b990628387&=&format=webp&quality=lossless&width=1296&height=1296" alt="CineArchive Logo" class="logo">
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
 
       <nav>
-        <a href="/movie">
-          <img src="static/Films.png" alt="films button">
+        <a href="/home">
+          <h2>Home</h2>
         </a>
         <a href="/watchlist">
-          <img src="static/Checklist.png" alt="watchlists button">
+          <h2>Watchlist</h2>
         </a>
-        <button onclick="openSearch()">
-          <img src="static/Search.png" alt="search button">
-        </button>
+        <a href="/register">
+          <h2>Register</h2>
+        </a>
       </nav>
     </section>
   </header>
@@ -55,6 +56,31 @@
       <p><strong>Description:</strong></p>
       <p>{{ movie.description }}</p>
     </div>
+      
+    <section class="watchlist">
+      <div class="add-watchlist">
+        <form action="{{ url_for('views.add_to_watchlist', movie_id=movie.id) }}" method="post">
+          <button type="submit">+ Add to Watchlist</button>
+        </form>
+      </div>
+
+      <div class="rem-watchlist">
+        <form action="{{ url_for('views.remove_from_watchlist', movie_id=movie.id) }}" method="post">
+          <button type="submit">- Remove from Watchlist</button>
+        </form>
+      </div>
+    </section>      
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
   </div>
 </main>
 
