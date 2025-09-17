@@ -12,8 +12,9 @@
     <section class="topnav">
       <div class="logo-container">
         <a href="/">
-            <!-- <img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo"> -->
-            <img src="https://media.discordapp.net/attachments/1130355826683559947/1371508556884348968/8.png?ex=68236461&is=682212e1&hm=db2a5c52218194e16dd3d25935cb2d6a9cdf4bd243949a00693549b990628387&=&format=webp&quality=lossless&width=1296&height=1296" alt="CineArchive Logo" class="logo">
+            <!-- <img src="https://media.discordapp.net/attachments/1130355826683559947/1371508556884348968/8.png?ex=68236461&is=682212e1&hm=db2a5c52218194e16dd3d25935cb2d6a9cdf4bd243949a00693549b990628387&=&format=webp&quality=lossless&width=1296&height=1296" alt="CineArchive Logo" class="logo">  -->
+            <img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo">
+            
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
@@ -41,7 +42,7 @@
 
 <div class="foreground">
   <img
-    src="https://media.discordapp.net/attachments/1101141739596697601/1370818880959942786/White.png?ex=68218ad1&is=68203951&hm=1e7d1db5b086604ce4dc28072683c1da14708268f49be5d9e4849625f5efca69&=&format=webp&quality=lossless&width=800&height=800"
+    src="{{ url_for('static', filename='White.png') }}"
     alt="CineArchive Logo"
     class="foreground-logo">
 </div>
