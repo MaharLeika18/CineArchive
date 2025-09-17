@@ -1,0 +1,6 @@
+# Welcome to CineArchive: A Personal Movie Database System
+
+The objective of this project is to design and implement a logging system for their movies, backed by a reliable relational database. Specifically, the system aims to store and organize comprehensive information about each title, including metadata such as genre, rating, duration, release date, language, director, and main cast. It also aims to support accurate and efficient input and updates through SQL-based operations. It should also enable users to organize content by their viewing status and preferences.
+
+It will allow users to record which titles they have watched or intend to watch, thereby enhancing their ability to plan and personalize their viewing experience. Additionally, the system will feature a basic recommendation mechanism based on the user’s viewing history to assist in content selection. Core technical goals include the development of a well-structured relational database, implementation of essential SQL scripts for data management, and integration of a user-facing application interface.
+
