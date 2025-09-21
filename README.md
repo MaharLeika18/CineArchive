@@ -4,13 +4,12 @@ The objective of this project is to design and implement a logging system for th
 
 It will allow users to record which titles they have watched or intend to watch, thereby enhancing their ability to plan and personalize their viewing experience. Additionally, the system will feature a basic recommendation mechanism based on the user’s viewing history to assist in content selection. Core technical goals include the development of a well-structured relational database, implementation of essential SQL scripts for data management, and integration of a user-facing application interface.
 
-
-
 ## Getting Started:
-** BTW when you guys make changes/commit please add a summary of the changes u guys made for easier progress tracking and documentation. 
 
-** To get started, i recommend making a virtual env by running `python -m venv venv` in the terminal then activating it. 
-Windows: `venv\Scripts\activate` 
+** BTW when you guys make changes/commit please add a summary of the changes u guys made for easier progress tracking and documentation.
+
+** To get started, i recommend making a virtual env by running `python -m venv venv` in the terminal then activating it.
+Windows: `venv\Scripts\activate`
 Mac: `source venv/bin/activate`
 Then, run the CineArchive_requirement.bat file.
 
@@ -28,29 +27,72 @@ Then, run the CineArchive_requirement.bat file.
 ** After following those steps, you should now be able to run the app.py file to start the flask server.
 
 ## Revisiting CineArchive TODO:
+
 Ah sht, here we go again. Who's ready for round 2?
 
 ### All pages:
-- [ ] The images uploaded to discord are no longer available so i rewrote it to use the ones in the static folder. Please check if i used the right photos in the right places im mostly guessing kek. 
+
+- [ ] The images uploaded to discord are no longer available so i rewrote it to use the ones in the static folder. Please check if i used the right photos in the right places im mostly guessing kek.
 - [ ] We dont actually have a page that tracks the movies watched?? only a watchlist? If we plan to make that a feature - Add a button for it in Home, make a new page for it, and code the sql functions
 - [ ] Figure out how to implement the recommendation system and the accessibility features - or at the very least, implement placeholders for those functions
 
-### Home page: 
-- [ ] Search bar isn't working 
+### Home page:
+
+- [ ] Search bar isn't working
 - [ ] The movie posters seem to be cycling thru the same ones? Maybe fix the randomizer on that
 - [ ] Double check if the black gradient at the bottom half of the page is intended. If so, consider shortening it/adding flavor text
-- [ ] The footer also seems oddly shaped maybe make it shorter as well 
+- [ ] The footer also seems oddly shaped maybe make it shorter as well
 
 ### Watchlist page:
+
 - [ ] The modal div containing the movie info isn't scrollable pls fix
-- [ ] Change the fav button into a watched button that removes the movie from the watchlist and adds it to the watched list 
+- [ ] Change the fav button into a watched button that removes the movie from the watchlist and adds it to the watched list
 
 ### Login and Register page:
+
 - [ ] The logo isnt fully visible - maybe resize or check if im using the right file
 
 ### Movie page:
+
 - [ ] Add a placeholder image for when the movie poster cant be fetched
 - [ ] Add placeholders for everything here actually.
 - [ ] Also troubleshoot the console errors loue, thanks loue
 
 
+
+### **AJ Here:**
+
+Just added some sql code on the dump.sql coz I found out that the sql code there doesn't put the movies into the db that's why it returns null. I also added the finial_dataset2.csv where I cleaned the final_dataset.csv to fit the columns on the movies table:>
+
+Also, use this command instead: mysql --local-infile=1 -u root -p --default-character-set=utf8mb4 CineArchive < CineArchive_dump.sql
+
+Because my added code on the dump.sql is a code wherein I use infile thingy to import the csv contents to the movies table:>
+
+This is the code I added:
+
+
+SETGLOBAL local_infile =1;
+
+ALTERTABLE movies
+
+MODIFY directors TEXT,
+
+MODIFY writers TEXT,
+
+MODIFY stars TEXT,
+
+MODIFY genres TEXT,
+
+MODIFY languages TEXT,
+
+MODIFY production_companies TEXT;
+
+LOADDATALOCAL INFILE 'final_dataset2.csv'
+
+INTOTABLE movies
+
+FIELDS TERMINATED BY','
+
+ENCLOSED BY'"'
+
+LINES TERMINATED BY'\n';

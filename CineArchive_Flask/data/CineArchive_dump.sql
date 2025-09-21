@@ -18,7 +18,7 @@
 --
 -- Table structure for table `alembic_version`
 --
-
+USE cinearchive;
 DROP TABLE IF EXISTS `alembic_version`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -354,3 +354,17 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-05-12 15:33:12
+
+SET GLOBAL local_infile = 1;
+ALTER TABLE movies 
+MODIFY directors TEXT,
+MODIFY writers TEXT,
+MODIFY stars TEXT,
+MODIFY genres TEXT,
+MODIFY languages TEXT,
+MODIFY production_companies TEXT;
+LOAD DATA LOCAL INFILE 'final_dataset2.csv'
+INTO TABLE movies
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
