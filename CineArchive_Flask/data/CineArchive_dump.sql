@@ -353,7 +353,7 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-<<<<<<< Updated upstream
+
 -- Dump completed on 2025-05-12 15:33:12
 
 SET GLOBAL local_infile = 1;
