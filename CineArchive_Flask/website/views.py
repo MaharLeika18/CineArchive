@@ -4,6 +4,7 @@ from . import db
 from sqlalchemy import func, text
 import ast
 import re
+from .models import Movie, Watchlist
 
 views = Blueprint('views', __name__)
 
@@ -25,7 +26,8 @@ def check_db_connection():
 
 @views.route('/home')
 def home():
-    return render_template('home.html')
+    user = current_user if current_user.is_authenticated else None
+    return render_template('home.html', user=user)
 
 @views.route('/')
 def index():
@@ -54,27 +56,53 @@ def view_watchlist():
         stmt = text("CALL get_watchlist_movies(:uid)")
         result = db.session.execute(stmt, {'uid': current_user.id})
         row = result.fetchall()
-
-        def parse_movie_row(row):
+        movies = []
+        
+        def safe_eval(value):
+            if isinstance(value, str):
+                try:
+                    return ast.literal_eval(value)
+                except Exception:
+                    return value  # fallback: just return the string
+            return value
+        
+        def parse_movie_row(rows):
+            # AJ Here, me changed the index of these things to match the output coz our stored proc changed
             return {
-                "id": row[0],
-                "title": row[1],
-                "year": row[2],
-                "description": row[3],
-                "directors": clean_string(row[4]),
-                "genres": ast.literal_eval(row[5]),
-                "rating": row[6],
-                "runtime": row[8],
-                "languages": ast.literal_eval(row[9]),
-                "actors": ast.literal_eval(row[10]),
-                "writers": ast.literal_eval(row[11]),
-                "production_companies": ast.literal_eval(row[12])
+                "id": rows[0],
+                "title": rows[1],
+                "year": rows[2],
+                "description": rows[3],
+                "directors": clean_string(rows[4]),
+                "genres": safe_eval(rows[7]),
+                "rating": rows[11],
+                "runtime": rows[10],
+                "languages": safe_eval(rows[9]),
+                "actors": safe_eval(rows[6]),
+                "writers": safe_eval(rows[5]),
+                "production_companies": safe_eval(rows[8])
             }
-
-        movies = [parse_movie_row(row) for row in row]
+            
+            #this is the old version with the faulty outputs bruh
+            # return {
+            #     "id": rows[0],
+            #     "title": rows[1],
+            #     "year": rows[2],
+            #     "description": rows[3],
+            #     "directors": clean_string(rows[4]),
+            #     "genres": safe_eval(rows[5]),
+            #     "rating": rows[6],
+            #     "runtime": rows[8],
+            #     "languages": safe_eval(rows[9]),
+            #     "actors": safe_eval(rows[10]),
+            #     "writers": safe_eval(rows[11]),
+            #     "production_companies": safe_eval(rows[12])
+            # }
+        movies = [parse_movie_row(r) for r in row]
 
     except Exception as e:
         current_app.logger.error(f"Error fetching watchlist: {e}")
+        print(movies)
         return render_template("watchlist.html", movies=[])
     
     return render_template("watchlist.html", movies=movies)
@@ -84,6 +112,8 @@ def add_to_watchlist(movie_id):
     try:
         stmt = text("CALL add_to_watchlist(:uid, :mid)")
         db.session.execute(stmt, {'uid': current_user.id, 'mid': str(movie_id)})
+        # movie_watchlist_entry = Watchlist(user_id=current_user.id, movie_id=str(movie_id))
+        # db.session.add(movie_watchlist_entry)
         db.session.commit()
         flash('Movie added to watchlist!', 'success')
     except Exception as e:
@@ -137,7 +167,7 @@ def random_movie():
             return render_template('404notfound.html', message="No movies found."), 404
         
         movie = dict(movie)
-
+        print(f'Movie DICT from random_movies: {movie}')
         movie['id'] = (str(movie['id']))
         movie['directors'] = clean_string(str(movie['directors']))
         movie['writers'] = clean_string(str(movie['writers']))

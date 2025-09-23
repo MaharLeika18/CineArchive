@@ -18,22 +18,35 @@
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
-
-      <nav>
-        
-        <a href="/watchlist">
-          <h2>Watchlist</h2>
-        </a>
-        <a href="/login">
-            <h2>Login</h2>
-          </a>
-        <a href="/register">
-          <h2>Register</h2>
-        </a>
-        <a href="{{ url_for('views.random_movie')}}">
-            <h2>Random</h2>
-        </a>
-      </nav>
+    {% if user == None %}
+        <nav>
+            
+            <a href="/watchlist">
+                <h2>Watchlist</h2>
+            </a>
+            <a href="/login">
+                <h2>Login</h2>
+            </a>
+            <a href="/register">
+                <h2>Register</h2>
+            </a>
+            <a href="{{ url_for('views.random_movie')}}">
+                <h2>Random</h2>
+            </a>
+        </nav>
+    {% else %}
+        <nav>
+                <a href="/watchlist">
+                    <h2>Watchlist</h2>
+                </a>
+                <a href="{{ url_for('views.random_movie')}}">
+                    <h2>Random</h2>
+                </a>
+                <a href="/logout">
+                    <h2>Logout</h2>
+                </a>
+        </nav>
+    {% endif %}
     </section>
   </header>
     
