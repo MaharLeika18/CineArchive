@@ -49,15 +49,15 @@ CREATE TABLE `movies` (
   `title` varchar(255) NOT NULL,
   `year` int DEFAULT NULL,
   `description` text,
-  `directors` json DEFAULT NULL,
-  `writers` json DEFAULT NULL,
-  `stars` json DEFAULT NULL,
-  `genres` json DEFAULT NULL,
-  `production_companies` json DEFAULT NULL,
+  `directors` text,
+  `writers` text,
+  `stars` text,
+  `genres` text,
+  `production_companies` text,
   `release_date` int DEFAULT NULL,
   `duration` varchar(10) DEFAULT NULL,
   `rating` float DEFAULT NULL,
-  `languages` json DEFAULT NULL,
+  `languages` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -353,4 +353,8 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< Updated upstream
 -- Dump completed on 2025-05-12 15:33:12
+=======
+-- Dump completed on 2025-09-23 17:55:19
+>>>>>>> Stashed changes
