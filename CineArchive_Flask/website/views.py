@@ -147,6 +147,7 @@ def remove_from_watchlist(movie_id):
 # View full movie details - poster (using api), title, director, release date
 @views.route('/movie/<string:movie_id>')
 def movie_details(movie_id):
+    user = current_user if current_user.is_authenticated else None
     try:
         stmt = text("CALL get_movie_details(:movie_id_param)")
         result = db.session.execute(stmt, {'movie_id_param': movie_id})
@@ -167,7 +168,7 @@ def movie_details(movie_id):
         current_app.logger.error(f"Error fetching movie details: {e}")
         return render_template('500.html'), 500
 
-    return render_template('movie.html', movie=movie)
+    return render_template('movie.html', movie=movie, user=user)
 
 # Random movie function
 @views.route('/random')

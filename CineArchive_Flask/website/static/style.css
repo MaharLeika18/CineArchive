@@ -381,6 +381,11 @@ nav a:hover h2:after {
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
+.nav-button-text p {
+  font-size: 1rem;
+  color: #F4963E;
+}
+
 .metadata-side p {
   margin-bottom: 0.75rem;
   font-size: 1rem;
@@ -470,6 +475,7 @@ nav a:hover h2:after {
   align-items: center;
 
 }
+
 
 .add-watchlist button, .rem-watchlist button {
   background: rgba(244, 150, 62, 0.15); /* Subtle orange tint */

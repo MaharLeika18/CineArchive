@@ -14,7 +14,6 @@
         <a href="/">
             <!-- <img src="https://media.discordapp.net/attachments/1130355826683559947/1371508556884348968/8.png?ex=68236461&is=682212e1&hm=db2a5c52218194e16dd3d25935cb2d6a9cdf4bd243949a00693549b990628387&=&format=webp&quality=lossless&width=1296&height=1296" alt="CineArchive Logo" class="logo">  -->
             <img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo">
-            
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
@@ -45,6 +44,8 @@
                 <a href="/logout">
                     <h2>Logout</h2>
                 </a>
+
+                <span class="nav-button-text"><p>Logged in as user #{{ current_user.id }} ({{ current_user.username }})</p></span>
         </nav>
     {% endif %}
     </section>
