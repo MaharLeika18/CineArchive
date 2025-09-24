@@ -46,7 +46,7 @@
 
     // === Fetch and Display Search Results from TMDb ===
     async function fetchSearchResults(title = '', year = '', person = '') {
-      const token = 'your_api_token_here';
+      const token = 'yJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YjBmZTI2MTRkNDQ3ZTFjNDAwMDBkNmJjYTQwYTZiOCIsIm5iZiI6MS43NDY5MDAzNjQ5ODU5OTk4ZSs5LCJzdWIiOiI2ODFmOTU4Y2QzMzJiZTY0NjRhMTU5Y2UiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.v5oNBG3nwHQkjO4hl62MiH58CLwLHc-3R3ECa2DbyKE';
       const headers = {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json;charset=utf-8'

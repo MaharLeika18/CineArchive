@@ -295,7 +295,7 @@
             font-weight: normal;
         }
 
-        .modal-director {
+        .modal-director, .modal-actors {
             color: #000000;
         }
 
@@ -468,6 +468,7 @@
                 <div>
                     <h3 class="modal-title" id="modal-title"></h3>
                     <p class="modal-director" id="modal-director"></p>
+                    <p class="modal-actors" id="modal-actors"></p>
                     <div class="modal-genres" id="modal-genres">
                         <!-- Genres will be inserted here -->
                     </div>
@@ -513,6 +514,7 @@
         const modalPoster = document.getElementById('modal-poster');
         const modalTitle = document.getElementById('modal-title');
         const modalDirector = document.getElementById('modal-director');
+        const modalActors = document.getElementById('modal-actors');
         const modalGenres = document.getElementById('modal-genres');
         const modalPlot = document.getElementById('modal-plot');
         const modalRating = document.getElementById('modal-rating');
@@ -520,8 +522,9 @@
         const movieData = document.querySelector(".movie-grid");
 
         let rawMovies = document.getElementById("movie-grid").dataset.movies;
+        console.log(rawMovies);
         let movies = JSON.parse(rawMovies);
-
+        console.log(movies);
         async function fetchAPI(url) {
             try {
                 const response = await fetch(url, {
@@ -563,7 +566,7 @@
                 const posterUrl = await fetchPoster(movie.id);
 
                 console.log('Directors:', movie.directors);
-
+                console.log(movie);
                 movieCard.innerHTML = `
                     <div class="movie-poster-container">
                         <img src="${posterUrl}" alt="${movie.title}" class="movie-poster">
