@@ -39,12 +39,25 @@ def search():
     query = request.args.get('query', '')
     if not query:
         return jsonify([])
-
     try:
-        stmt = text("CALL search_movies(:query_text)")
-        results = db.session.execute(stmt, {'query_text': query.lower()}).mappings().fetchall()
-        movies = [dict(row) for row in results]
+        search_pattern = f"%{query.lower()}%" # wildcard bby
+
+        stmt = text("""
+            SELECT id, title
+            FROM movies
+            WHERE LOWER(title) LIKE :q
+            ORDER BY INSTR(LOWER(title), :q2), LENGTH(title)  
+            LIMIT 50;
+        """)
+
+        with db.engine.connect() as conn:
+            result = conn.execute(stmt, {"q": search_pattern, "q2": query.lower()})
+            rows = result.mappings().all()  
+            movies = [dict(row) for row in rows]
+
+        print("Search results:", movies)
         return jsonify(movies)
+    
     except Exception as e:
         current_app.logger.error(f"Error in search_movies: {e}")
         return jsonify([]), 500

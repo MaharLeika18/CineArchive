@@ -39,21 +39,21 @@
 
 <main>
   <div class="metadata-side">
-    <h1>{{ movie.title }} ({{ movie.year }})</h1>
+    <h1>{{ movie.title | default("Untitled") }} ({{ movie.year | default("Unknown Year") }})</h1>
 
-    <p><strong>Directed by:</strong> {{ movie.directors}}</p>
-    <p><strong>Writers:</strong> {{ movie.writers}}</p>
-    <p><strong>Stars:</strong> {{ movie.stars}}</p>
-    <p><strong>Genres:</strong> {{ movie.genres}}</p>
-    <p><strong>Production Companies:</strong> {{ movie.production_companies}}</p>
-    <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-    <p><strong>Duration:</strong> {{ movie.duration }}</p>
-    <p><strong>Rating:</strong> {{ movie.rating }}</p>
-    <p><strong>Languages:</strong> {{ movie.languages}}</p>
+    <p><strong>Directed by:</strong> {{ movie.directors | default("N/A") }}</p>
+    <p><strong>Writers:</strong> {{ movie.writers | default("N/A") }}</p>
+    <p><strong>Stars:</strong> {{ movie.stars | default("N/A") }}</p>
+    <p><strong>Genres:</strong> {{ movie.genres | default("N/A") }}</p>
+    <p><strong>Production Companies:</strong> {{ movie.production_companies | default("N/A") }}</p>
+    <p><strong>Release Date:</strong> {{ movie.release_date | default("TBD") }}</p>
+    <p><strong>Duration:</strong> {{ movie.duration | default("Unknown") }}</p>
+    <p><strong>Rating:</strong> {{ movie.rating | default("Unrated") }}</p>
+    <p><strong>Languages:</strong> {{ movie.languages | default("N/A") }}</p>
 
     <div class="description-block">
       <p><strong>Description:</strong></p>
-      <p>{{ movie.description }}</p>
+      <p>{{ movie.description | default("No description available.") }}</p>
     </div>
       
     <section class="watchlist">

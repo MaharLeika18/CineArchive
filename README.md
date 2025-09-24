@@ -50,12 +50,12 @@ Ah sht, here we go again. Who's ready for round 2?
 
 ### Login and Register page:
 
-- [ ] The logo isnt fully visible - maybe resize or check if im using the right file
+- [X] The logo isnt fully visible - maybe resize or check if im using the right file
 
 ### Movie page:
 
-- [ ] Add a placeholder image for when the movie poster cant be fetched
-- [ ] Add placeholders for everything here actually.
+- [X] Add a placeholder image for when the movie poster cant be fetched
+- [X] Add placeholders for everything here actually.
 - [ ] Also troubleshoot the console errors loue, thanks loue
 
 

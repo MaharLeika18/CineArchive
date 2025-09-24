@@ -61,15 +61,23 @@
 </div>
     
 <div class="search-container">
-  <form class="search-box" onclick="fetchSearchResults()" method="GET">
-    <input type="text" id="searchInput" class="search__input" placeholder="Search..." />
-  </form>
-  
+  <div class="search-box">
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search__input" 
+      placeholder="Search..." 
+    />
+    <button type="button" class="search-btn" onclick="fetchSearchResults()">
+      <img src="{{ url_for('static', filename='Search.png') }}" alt="Search">
+    </button>
+  </div>
+
   <div id="search-results" class="search__results"></div>
 </div>
- </div>
-    
+
 <div class="pad"></div>
+
     
     <footer class="footer">
         <p>© 2025 CineArchive - All rights reserved</p>
@@ -85,12 +93,10 @@
             document.getElementById('search-popup').classList.add('hidden');
         }
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const query = this.value.trim();
-            if (query) {
-                fetchSearchResults(query);
-            } else {
-                document.getElementById('search-results').innerHTML = '';
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // prevent form submit reload
+                fetchSearchResults();
             }
         });
 
