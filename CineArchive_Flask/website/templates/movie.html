@@ -12,12 +12,12 @@
     <section class="topnav">
       <div class="logo-container">
         <a href="/">
-          <img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo"> 
+            <a href="/home"><img src="{{ url_for('static', filename='App_Icon_White.png') }}" alt="CineArchive Logo"></a>
         </a>
         <h2>Cine<i>Archive</i></h2>
       </div>
 
-      <nav>
+      {# <nav>
         <a href="/home">
           <h2>Home</h2>
         </a>
@@ -27,7 +27,36 @@
         <a href="/register">
           <h2>Register</h2>
         </a>
-      </nav>
+      </nav> #}
+      {% if user == None %}
+          <nav>
+              <a href="/watchlist">
+                  <h2>Watchlist</h2>
+              </a>
+              <a href="/login">
+                  <h2>Login</h2>
+              </a>
+              <a href="/register">
+                  <h2>Register</h2>
+              </a>
+              <a href="{{ url_for('views.random_movie')}}">
+                  <h2>Random</h2>
+              </a>
+          </nav>
+      {% else %}
+          <nav>
+                  <a href="/watchlist">
+                      <h2>Watchlist</h2>
+                  </a>
+                  <a href="{{ url_for('views.random_movie')}}">
+                      <h2>Random</h2>
+                  </a>
+                  <a href="/logout">
+                      <h2>Logout</h2>
+                  </a>
+                  <span class="nav-button-text"><p>Logged in as user #{{ current_user.id }} ({{ current_user.username }})</p></span>
+          </nav>
+      {% endif %}
     </section>
   </header>
     
